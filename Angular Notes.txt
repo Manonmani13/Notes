@@ -1,0 +1,903 @@
+function : Function is set of executable statement to perform a task. Functions we can use for reusable.Using function keyword we can create functions in typescript.
+
+function fun1(){
+alert("hi")
+}
+fun1()
+
+We can pass arguments into a function
+
+function fun1(x:number,y:number){
+	alert(x+y)
+}
+
+fun1(10,20)
+
+Every function can return a value using return keyword.
+
+function fun1(x:number,y:number):number{
+	return x+y
+}
+
+var rv:number=fun1(2,3)
+alert(rv)
+
+------------------------------------------
+
+var : using this keyword we can provide function scope to the variable
+
+let : using this keyword we can provide block scope to the variable.
+
+Ex:
+function fun1()
+{
+{
+var sno:number=100
+let x:number=3
+}
+alert(sno)
+alert(x) // Error due to private variable
+}
+fun1()
+
+
+24-04
+-----
+
+Types of functions : 
+1) Anonymous Function : If we create any function without name comes under anonymous function
+
+Ex:
+
+var fun1=function(){
+alert("From anonymous function")
+}
+//alert(fun1)
+fun1()
+
+2) Nested Function : If we create a function inside another function comes under nested function
+
+function fun1(){
+alert("From fun1")
+  function fun2(){
+	alert("From fun2")
+	}
+	fun2()
+}
+fun1()
+
+Ex 2:
+
+function fun1(){
+//alert("From fun1")
+  return function fun2(){
+	alert("From fun2")
+	}
+	
+}
+var rv:any=fun1()
+//alert(rv)
+rv()
+
+callback function : It we pass a function as argument of another function comes under callback function
+
+Ex:
+
+
+
+function fun2(){
+alert("fun2")
+}
+function fun3(){
+alert("fun3")
+}
+function fun1(x){
+alert("Fun1")
+x()
+}
+
+fun1(fun2)
+fun1(fun3)
+
+Ex:
+
+function calc(no1:number,no2:number,refVar:any){
+refVar(no1,no2)
+}
+
+function add(x:number,y:number){
+alert(x+y)
+}
+function mul(x:number,y:number){
+alert(x*y)
+}
+calc(10,20,mul)
+
+
+Arrow Function : It is short syntax of a function definition. We can also use arrow functions to create nested functions inside the class.
+
+Ex:
+
+var fun1=()=>{
+alert("From arrow function")
+}
+
+fun1()
+
+Ex:
+
+var arr:any=[10,20,30,40,50]
+var rv:any=arr.map(x=>x*111)
+alert(rv)
+
+--------------------------------------
+
+Types of variables : Variable is name of memory location to store values
+Types of variables are
+
+Local Variable : Variable declaration inside a function comes under local variable. Local variables we can access from the function where we declared variables we can not access from other functions.
+
+Ex:
+
+function fun1(){
+ var x:number=100
+ alert(x)
+}
+function fun2(){
+alert("From fun2")
+alert(x) // Error due to local variable of fun1
+}
+fun1()
+fun2()
+-----------
+Global Variable : Declaration of variables outside all functions in the script. We can access global variable from any function in script.
+
+Ex:
+
+var sno:number=100
+function fun1(){
+alert(sno)
+}
+function fun2(){
+alert(sno)
+}
+fun1()
+fun2()
+
+
+-----------------
+Block Scope Variable: Variable declaration inside a block comes under block scope variable. We can not access this variable from outside the block.
+We can create block scope variables using let keyword
+
+Ex:
+
+function fun1(){
+{
+var x:number=100
+let y:number=200
+}
+alert(x)
+alert(y)
+}
+fun1()
+
+-------------------------------
+
+Lexical scope : It is outer function scope variable. We can access lexical scope variable from inner functions.
+
+Ex:
+
+function fun1(){
+
+ let x:number=123
+
+	function fun2(){
+	alert(x)
+	}
+	fun2()
+}
+fun1()
+
+
+------------------
+
+Visual Studio Code : It is open source IDE to create project in Angular/React/Nodejs,....
+
+It supports error color codes/ Auto help/Integrated Terminals,....
+
+------------------------------
+OOP's in typescript.
+-------------------
+
+Typescript supports OOP's concepts to provide reusability and security to application. According to OOPs every statement we should place inside the class.
+
+Class is collection of members. class members are properties and methods.
+
+property : It is a variable declaration inside the class
+
+method : It is a function declaration inside the class.
+
+Object : It is memory of class. Class members we can access using object
+
+new : Using this keyword we can allocate new memory to class
+
+constructor : It is a type of function to execute statements at the time of creating object. Class object we can create with the help of constructor. We can also create custom constructors using constructor key word. 
+
+class cls1{
+	 sno:number=100
+
+}
+ var  obj:cls1=new cls1()
+ alert(obj.sno)
+
+
+-----------------------
+
+class cls1{
+	 sno:number=100
+	 fun1(){
+		alert("From class method")
+	}
+}
+ var  obj:cls1=new cls1()
+ alert(obj.sno)
+ obj.fun1()
+
+Ex:
+
+class cls1{
+	constructor(){
+		alert("From constructor")
+	}
+	fun1(){
+		alert("From fun1")
+	}
+}
+var obj:cls1=new cls1()
+obj.fun1()
+----------------------------------------------------------
+Inheritance : It is a concept of sharing a class content to another class. We can use Inheritance to reuse the class contents. Using extends keyword we can inherit a class from another class.
+
+Types of Inheritances
+
+1) Single Inheritance : In this concept we have only one parent class and one derived
+
+Ex:
+
+class cls1{
+	fun1(){
+		alert("Function from class1")
+	}
+}
+
+class cls2 extends cls1{
+	fun2(){
+		alert("Function from class2")
+	}
+}
+
+var obj=new cls2()
+obj.fun1()
+
+Multiple Inheritance : In this concept a child class can have multiple parent classes. Typescript
+doesnot support this concept due to confusion to call the block of function if multiple parent classes have same function
+
+Multi Level Inheritance : In this concept a class can behave as both base class and derived class.
+
+class cls1{}
+class cls2 extends cls1{}
+class cls3 extends cls2{}
+
+Hierarchical Inheritance : In this concept a class can have multiple derived classes.
+
+Hybrid Inheritance : It is collection of single,multiple,multi level and hierarchical inheritances
+Typescript does not support this concept.
+
+---------------------------------------------
+
+this : Using this keyword we can access the members of current class from the methods of same class.
+
+Ex:
+
+class cls1{
+    sno:number=100
+    fun1(){
+        var sno:number=1234
+        alert("From fun1")
+        alert(sno)
+        alert(this.sno)
+        this.fun2()
+    }
+    fun2(){
+        alert("From fun2")
+    }
+}
+var obj:cls1=new cls1()
+obj.fun1()
+
+-------------------
+
+super : Using this keyword we can access the members of parent class from derived class.
+
+class cls1{
+    fun1(){
+        alert("From class1")
+    }
+}
+
+class cls2 extends cls1{
+    fun1(){
+        alert("Fun1 from class2")
+    }
+    fun2(){
+        alert("From class2")
+        this.fun1()
+        super.fun1()
+    }
+}
+
+var obj=new cls2()
+obj.fun2()
+
+
+----------------------------------------
+
+Ex:
+
+class cls1{
+    fun1(){
+        alert("From class1")
+    }
+}
+
+class cls2 extends cls1{
+    fun1(){
+        alert("Fun1 from class2")
+    }
+    fun2(){
+        alert("From class2")
+        this.fun1()
+        super.fun1()
+    }
+}
+
+var obj=new cls2()
+obj.fun2()
+
+
+------------------------------------
+
+Ex:
+
+class cls1{
+    sno:number=333
+    fun1(){
+        alert(this.sno)
+         var fun2=()=>{
+            alert("From fun2")
+            alert(this.sno)
+        }
+        fun2()
+    }
+}
+var obj=new cls1()
+obj.fun1()
+
+-------------------------------------------
+
+Access Modifiers : Using access modifiers we can specify the scope of accessibility to class contents.
+By default we can access the class contents from base class, from derived class and from outside the class. Using access modifiers we can restrict the scope of accessibility to the class contents.
+
+We have  3 types of access modifiers those are
+
+Public : public members we can access from base class, from derived class and from outside the class
+Protected : These members we can access in base class and from derived class
+Private : These members we can access from base class only but not from derived class and from outside the class
+
+class clsBase{
+    public pub_var:string="Public Variable"
+    private pri_var:string="Private Variable"
+    protected pro_var:string="Protected Variable"
+    funParent=()=>{
+        alert(this.pub_var)
+        alert(this.pro_var)
+        alert(this.pri_var)
+    }
+}
+class clsDer extends clsBase{
+	funDer=()=>{
+	alert(this.pub_var)
+        alert(this.pro_var)
+        //alert(this.pri_var)
+	}
+}
+var objBase:clsBase=new clsBase()
+//alert(objBase.pub_var)
+//alert(objBase.pri_var) - Error
+//objBase.funParent()
+
+ex:
+
+class cls1{
+    
+    constructor(private x:number){
+        alert(`From const...${this.x} Hi all`)
+    }
+    fun1(){
+        alert(`From fun1 ${this.x}`)
+    }
+}
+var obj:cls1=new cls1(10123)
+obj.fun1()
+
+Hoisting : It is a concept of declaration of variables before starting the execution of script. By default variables will declare with undefined. Functions also can hoist.
+
+namespace : It is collection of classes. we can use namespaces to hold multiple classes as a group.
+
+export  :  using this keyword we can export classes of namespace
+
+import : To import the classes of namespace
+
+namespace ns1{
+    export class cls1{
+        fun1(){
+            alert("From fun1")
+        }
+    }
+    class cls2{
+        fun2(){}
+    }
+    export class cls3 extends cls2{
+        
+    }
+
+}
+var obj:ns1.cls1=new ns1.cls1()
+obj.fun1()
+
+
+-----------------------------------
+
+Angular : Angular is framework of typescript. It is client side script to implement dynamic web pages.
+
+Angular functionalities are available in the form of node modules. we need to install then using npm program.
+
+Angular supports
+data binding
+single page application
+pipes
+component programming
+DI
+Validators
+...
+...
+...
+
+Angular is component programming
+
+component : Component is collection of logics and design script.
+---------------------
+Basic packages to work with Angular
+
+core
+common
+compiler
+platform-browser
+platform-browser-dynamic
+-------
+core : This package provides all the core functionalities of Angular.
+This package provides many classes like Component,NgModule,...
+.....
+In angular classes are in pascal case and functions are in camel case.
+
+---------------------------
+Every class provides decorators to decorate classes/functions/properties with some additional features.
+
+Decorator is a type of function starts with @ symbol
+Component - @Component()
+NgModule - @NgModule()
+
+Every decorator provides some metadata information in the form of properties.
+---------------------------------
+@Component : Using this decorator we can create components.
+
+Properties of component class :
+	selector : Using this property we can provide name to the component.
+	template : Using this property we can provide html script to the component
+	templateUrl : To specify html file as template page of component
+	styleUrls : To specify css file as style sheet of component
+
+@Component({
+	selector:"Login-comp",
+	template:"<h1>Login</h1><input type='text' />",
+	templateUrl : "login.html",
+	
+})
+export class LoginComponent{}
+
+--------------------------------------
+@NgModule() : Using this decorator we can create module in angular application. This decorator is available in NgModule class.
+
+Module is collection of components,services,pipes,....
+
+This decorator provides some properties those are
+
+declarations : using this property we can specify the names of components
+
+imports : using this property we can specify the pre defined classes of component which we are using in module
+
+bootstrap : To specify the list of components which we are displaying in front page we can use this property
+
+-------------------------
+common : This package provides common directives and pipes.
+
+compiler : This package we can use to load templates into functions
+
+----------------------------
+platform-browser : To load common directives and pipes,.... It provides BrowserModule class to load common and compiler packages
+
+----------------------------
+platform-browser-dynamic : using this package we can load modules in to angular applications. This package provides 
+platformBrowserDynamic().bootstrapModule() function to load the modules
+
+12/05
+
+Files and folders of new angular project
+
+package.json : This file contains meta data information of project and also installed packages of project.
+
+package-lock.json : Same as package.json but also maintains subpackages information and also the location from where these packages are installed
+
+tsconfig.json : Provides configuration settings of typescript.
+
+angular.json : This file contains conf settings of angular
+
+node_modules : This folder contains all installed node modules
+
+src : It is source location of project contains all component,modules, services ,... related to angular
+
+index.html : It is landing file of project dislays when we run application in browser
+
+main.ts : This is first executable ts file when we enter ng server command. This file loads root module of application and also loads the components related that module.
+
+styles.css  : It is common style sheet to maintain styles of project
+
+app : It is sub folder of src folder contains modules and components.
+
+By default every new project provides a component with name app and also a module with name app
+
+Every component provides 4 files names are same as component name with different extensions
+
+.ts : This file contains the structure of component
+.html : This file contains html script of component
+.css : This file contains styles of component
+.spec.ts : contains test cases of component
+
+-----------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
