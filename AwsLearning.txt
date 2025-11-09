@@ -1,0 +1,130 @@
+What is Cloud?
+on premises infrastructure
+precuring server,networking,building,electricity,user management
+somewhere  on-premises infrastructure maintained and controlled through interface
+
+Ex:
+it is like aparment and flat
+aparment security and maintainance by aparment association or owner 
+flat we are playing the rent and using
+aparment owner never entered into our flat. in flat whatever happening tenant responsiblity.
+
+
+public,private and hybrid cloud
+********************************
+
+public cloud - publicly using by all - AWS,Azure,GCP,Ailbaba,Rack space
+private cloud - cloud used by within organization - cisco cloud ,airtel cloud ,jio cloud
+hybrid cloud - combination of public and private
+community cloud - particular community only using the cloud 
+
+IAAS - infrastructure as service -openstack
+PASS - Platform as service  -openshif
+SAAS - software as service -gmail
+
+Free Tier Creation
+***********************
+
+New Email, Credit /Debit card,Mobile Number
+Free support
+Account activation (min to 24 hours)
+https://console.aws.amazon.com/support/home/#
+use with cautions
+can learn entire association portions by free tier
+
+Points needs to be considered
+******************************
+After created any service -always close/terminate - *During Learning
+In Real time never ever terminate or close the service without any approval
+
+What is Region?
+it means data center 
+which is availablity zone
+where the data is stored
+
+Region & Availability Zones
+******************************
+20 Region as of Date
+Each Region has minimum 2 Availability zones.
+Region Selection
+Each region has different cost structure
+Any new service implement with limited regions and later available to all region
+No common interface
+Each availablity zone is separate data centers within region (main data center)
+Each AZ separated from one another and so that is isolated from disasters
+Global Level services
+Region Level services
+
+Purchasing Options
+**********************
+On-Demand - based on the demand we can purchases. here we pay more
+Reserved - already reserved . we will do advanced payment. we will pay less money because we pay lumpsum amount
+spot - it reduce cost cheaper than on-demand 
+
+
+EC2
+*****
+Amazon Elastic Compute cloud is a core service
+provide resizable virtual servers called instances
+static ip is also called as elastic ip
+static ip allowed per account 5 only allowed for free
+
+Ex: think Ec2 as renting a computer in the cloud that you can use to run applications, host websites, process data, and more. 
+Advantages:
+scalability
+cost controll
+flexibility
+reliablity
+security
+
+
+Ec2 Instance types
+********************
+T2.micro
+T-instance family
+2-Gernaration  .improvments with each generation
+Micro size (Nano -> Micro -> Small -> Medium -> Large -> Xlarge -> 2xLarge
+
+
+Memory optimization
+***********************
+T2/T3 unlimited -1 CPU - 1Gb RAM
+
+Tag - is used to search the particular service .some company using tag to control unwanted ec2 instances creation with help of that
+
+Security Group
+***************
+Inbound - how can we access that is inbound
+Outbound access - we are trying to access some other instance from one that is outbound
+
+in inbound rules we did give access to everyone means they cannot access the sites
+keypair
+*******
+user name -key 
+password -pair
+to access the instance we need key pair 
+
+putty key generator app useage -> used to convert pm file to ppk
+
+putty configuration -> used to authenticate the user using ppk file 
+
+
+curl http://169.254.169.254/latest/meta-data/public-hostname -> used to access the from aws instance and show that in terminal
+curl http://169.254.169.254/latest/dynamic/instance-identity/document  -> which will show the accounts details 
+yum install httpd -> used to install http
+cd /var/www/html 
+systemctl start httpd
+systemctl enable httpd
+
+curl http://169.254.169.254/latest/dynamic/instance-identity/document > var/www/html/index.html -> transfer document details to html file
+
+how to create template
+**********************
+1.option
+lanuch template -> crate lanuch template 
+
+2.option
+connection ->crate template from instance
+
+to lanuch the template -> action  -> lanuch instance from template
+
