@@ -21,6 +21,61 @@ community cloud - particular community only using the cloud
 IAAS - infrastructure as service -openstack
 PASS - Platform as service  -openshif
 SAAS - software as service -gmail
+Cloud Models
+On Premises (own server)
+
+Applications
+Data
+Runtime
+Middleware
+O/S
+Virtualization
+Servers
+Storage
+Networking
+(You manage everything)
+
+IAAS (virtual machines)
+
+Applications
+Data
+Runtime
+Middleware
+O/S
+(You manage these)
+Virtualization
+Servers
+Storage
+Networking
+(Managed by cloud service provider)
+
+PAAS (app service)
+
+Applications
+Data
+(You manage these)
+Runtime
+Middleware
+O/S
+Virtualization
+Servers
+Storage
+Networking
+(Managed by cloud service provider)
+
+SAAS (O365)
+
+Applications
+Data
+Runtime
+Middleware
+O/S
+Virtualization
+Servers
+Storage
+Networking
+(Managed by cloud service provider)
+
 
 Free Tier Creation
 ***********************
@@ -61,6 +116,10 @@ On-Demand - based on the demand we can purchases. here we pay more
 Reserved - already reserved . we will do advanced payment. we will pay less money because we pay lumpsum amount
 spot - it reduce cost cheaper than on-demand 
 
+spot 
+-----
+it is lowest than reserved instances 
+then on-demand
 
 EC2
 *****
@@ -128,3 +187,327 @@ connection ->crate template from instance
 
 to lanuch the template -> action  -> lanuch instance from template
 
+AMI
+***
+ami is a template that contains the software configuration required to lanuch instance (os,application server)
+
+key components of ami
+------------------------
+operation system
+application server : apache,nginx 
+application: any custom software or package
+lanuch permissions: controls who can use the ami
+block device mapping: specifies volumes to attach when the instance lanuches
+
+type of amis
+***************
+aws provided amis : basic os images maintained by aws
+marketplace amis: provided by third party vendors ,often with licensed software
+custom amis: created by users to replicate specific configuration
+used to clone
+use case : if you want to replicate accross multiple system , you can create ami from it and lanuch new instance using that ami
+
+volume
+-------
+even stop ec2 machine -volume will be charged
+it contains only data
+it refers to EBS -elastic block storage 
+it used to store data,os, databases 
+Used with Amazon EC2 instances.
+
+Types of EBS Volumes:
+***************************
+General Purpose SSD (gp3/gp2) – Balanced price and performance.
+Provisioned IOPS SSD (io2/io1) – High-performance for I/O-intensive apps like databases.
+Throughput Optimized HDD (st1) – For big data, log processing.
+Cold HDD (sc1) – Low-cost storage for infrequently accessed data. 
+
+how to create ami 
+*****************
+action ->image -> create image
+
+we can copy amis to one region to another region
+action ->copy ami ->choose the region
+
+snapshot - incremental backup
+********************************
+which is use when some issue occured to fixed that wiyh help of snapshot (that means gget working code)
+to get working code we should convert snapshot to image 
+
+we can schedule snapshot (it is in lifecycle policy
+
+schedule instance
+******************
+reserve ec2 instance based on your schedule
+it is lowest cost than spot
+
+placement group - it is placement stragery 
+cluster
+--------
+within same availablity zone all machines will conver
+cluster instances into  a low-latency group  in sinngle availablity zone.
+
+spread
+-------
+spread instance across underlying  hardware ( max 7 instances per group  per Az critical application
+
+Partitions
+*************
+spread instance accross many different partitions on AZ 
+
+find the free tier uage till now -> billing dashboard
+
+
+Reduce the cost
+****************
+Billing Alert
+Check Billing dashboard – everyday
+Stop resources (terminate) – if not using immediately.
+Understand free tier 12 month limit.
+https://aws.amazon.com/pricing/
+Billing alert – demo
+AWS Budgets
+
+scale in -> reduce the length
+scale out ->increase 
+
+
+Scalability
+**************
+Application / System can handle greater loads by adapting.
+Vertical and Horizontal
+Horizontal Scalability also called as elasticity
+High Availability
+Survive a data center loss
+
+Load Balancing
+***************
+Distribute the load across the nodes.
+Elastic load balancer can be private or public
+Healthy instances only distribute the load
+Load balancer is a service that shares the load (traffic) to multiple downstream servers.
+Single point of Access like DNS – expose to the application.
+Health checks – handle failures.
+Stickiness with cookies.
+High Availability of EC2 instances across availability zones.
+
+AWS Elastic Load Balancer Types:
+*********************************
+Classic Load Balancer – 2009
+Application Load Balancer – 2016
+Network Load Balancer – 2017
+
+Classic Load Balancer
+*************************
+Old Generation. Supports TCP (Layer 4) and HTTP and HTTPS (Layer 7)
+Classic load balancer – demo
+
+we have to enable health check for load balancer
+
+
+Application Load Balancer
+**************************
+
+Most popular
+Supports web sockets and HTTP/HTTPS (Layer 7)
+Scaled automatically
+Can load balance between → EC2 instances, Amazon ECS, Web Applications, and Serverless
+
+need to access through load balancer not through individual machine
+then
+from EC2 secgroup - source from load balancer load balancer
+Listeners - Protocol and port
+Multiple Listeners
+Add Listener --> HTTP-8080
+Return Fixed response
+Response code - 200
+Content-type - text/html
+Response Body --> <html><body>hi this is test </body></html>
+Save
+---in browser hostname:8080 --> getting timeout
+add port 8080 in security group
+Listeners help to map set of protocol and port to set of targets
+Target groups
+A target group can be
+IP address, instances or lambda functions
+
+stickiness -> it will enable with help of cookies
+duration  7 days
+
+stickiness is concept of sending load balancer to same server
+
+VPC
+*******
+virtual private cloud
+it is like your own private network inside aws
+you can put your server, databases and 	other resouces inside this network
+You control:
+IP address range (using CIDR blocks like 10.0.0.0/16)
+Subnets (smaller networks inside the VPC)
+Security (firewalls, routing rules)
+
+
+Think of it as your own data center in the cloud.
+
+ 2. AWS VPC Practical Demo (What happens in practice?)
+ ******************************************************
+
+Step 1: Create a VPC → Choose CIDR block (e.g., 10.10.0.0/16)
+Step 2: Create Subnets → Divide VPC into smaller parts (e.g., 10.10.1.0/24)
+
+Public Subnet → Can access the internet
+Private Subnet → No direct internet access
+
+
+Step 3: Add Internet Gateway → Allows public subnet to talk to the internet
+Step 4: Configure Route Tables → Decide which subnet can go where
+Step 5: Launch EC2 instances inside subnets
+
+3. AWS VPC Subnets & CIDR Block
+*************************
+CIDR block defines the IP range.
+
+Example: 10.10.0.0/16 means 65,536 IP addresses.
+
+
+Subnet is a smaller range inside VPC.
+
+Example: 10.10.1.0/24 means 256 IP addresses.
+
+ 4. VPC Peering
+*******************
+What is it?
+
+Connect two VPCs so they can talk to each other.
+
+
+Why use it?
+
+If you have multiple VPCs (maybe in different regions or accounts) and need them to share data.
+
+
+Important: VPC Peering does NOT allow transitive routing (A → B → C is not possible).
+
+
+Why subnets?
+**********
+Organize resources (public vs private)
+Control traffic better
+Subnet
+********
+0.0.0.0
+255.255.255.255
+
+8   8   8   8  - 32bit IPV4
+IPV6 - 64 Bit
+10.0.0.0/8
+
+10.10.0.0/16 - VPC - 10.10.0.0/16 --> Subnet 10.10.1.0-255/24
+10.10.0.0/24
+10.10.0.0/32 ---> 106.51.153.223/32
+CIDR
+
+
+VPC = Your private network in AWS
+Subnets = Smaller networks inside VPC
+CIDR = Defines IP range
+VPC Peering = Connect two VPCs
+
+Network Load Balancer
+*************************
+Using for High Performance – Handles millions of requests per second.
+Can be assigned to static IP – Unlike Application Load Balancer, NLB supports static IP addresses.
+Network load balancer can be used with:
+
+EC2 Instances – Distribute traffic across virtual machines.
+Containerized applications (Amazon ECS) – Works with containers.
+Web Applications (using IP addresses) – Direct IP-based routing.
+Works at Layer 4 (Transport Layer): Routes traffic based on IP address and TCP/UDP ports.
+Key Features:
+
+Handles millions of requests per second.
+Supports static IP addresses.
+Best for low latency and high throughput.
+
+
+Use Cases:
+
+EC2 instances
+Containers (Amazon ECS)
+Applications that need IP-based routing
+
+Network Load Balancer – Demo – Usually involves creating an NLB, attaching targets, and testing.
+
+ What is Elastic Block Storage (EBS)?
+******************************
+Purpose: Provides persistent storage for EC2 instances.
+Think of it like: A hard disk attached to your virtual machine.
+Key Features:
+
+Data stays even if the EC2 instance stops.
+Can be resized and backed up (snapshots).
+Different types for performance (SSD, HDD).
+
+
+Use Cases:
+
+Store application data
+Database storage
+Backup and recovery
+
+used to attach  within same availability zone 
+EC2 = instance of os +root volume
+
+Cloud Formation -> AWS IAC ( infrastructure as a code)
+Ansible script 
+Terraform - (Hybrid cloud -200 provides supports)
+
+EBS HDD and SSD
+----------------
+IOPS - input output per second
+ipos performance     	
+ through                 HD-Low  SSD-High
+great at sequential I/O           small,random,i/o
+Recommended for Large Streaming   transaction
+if something crash(currpted) in hard drive, and we cannot use it again  -> HDD
+if something is currpted ,they will replace that particular part -> SSD
+
+EBS Encryption
+**************
+What does it do?
+
+Encrypts your EBS volume so data is secure at rest and in transit.
+
+
+How it works:
+
+Uses AWS Key Management Service (KMS) keys.
+Encryption is automatic for snapshots and new volumes created from encrypted snapshots.
+
+
+Benefits:
+
+No performance impact.
+Protects sensitive data.
+
+Snapshot Lifecycle Manager
+**************************
+What is it?
+
+Automates EBS snapshot creation and deletion.
+
+
+Why use it?
+
+For backups and disaster recovery.
+
+How it works:
+
+You create a policy that says:
+
+Take a snapshot every X hours/days.
+Keep snapshots for Y days.
+
+AWS handles the schedule automatically.
+
+cloud watch -> used to monitoring tool
