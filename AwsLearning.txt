@@ -511,3 +511,162 @@ Keep snapshots for Y days.
 AWS handles the schedule automatically.
 
 cloud watch -> used to monitoring tool
+ 
+What is AWS EFS?
+****************
+Amazon Elastic File System (EFS) is a scalable, cloud-native Network File System (NFS) that allows multiple EC2 instances
+ to access the same file system concurrently. It’s designed for Linux-based workloads and supports NFSv4.1 and NFSv4.2 protocols.
+
+🔹 Key Features
+
+Fully Managed: No need to provision or manage storage.
+Elastic: Automatically scales up or down as files are added or removed.
+Shared Access: Multiple EC2 instances can mount the same file system.
+Durability & Availability: Data is stored redundantly across multiple Availability Zones.
+Performance Modes:
+
+General Purpose: Balanced for latency and throughput.
+Max I/O: Optimized for higher throughput workloads.
+
+🔹 Use Cases
+
+Web serving and content management
+Big data and analytics
+Media processing workflows
+Container storage (e.g., with Amazon ECS or EKS)
+Home directories for users
+
+
+🔹 Pricing
+You pay for:
+
+Storage used (GB/month)
+Provisioned throughput (if using Provisioned Throughput mode)
+Data transfer (cross-region or to/from on-premises)
+
+
+🔹 How to Use EFS
+
+Create a File System in the AWS Console.
+Configure Mount Targets in each Availability Zone.
+Mount the File System on EC2 instances using the NFS client.
+Access Files just like a local file system.
+
+
+IAM - Identity Access Management
+********************************
+Global level -accross this account
+User - single signOn  -LDAP,AD,Identity manager
+Group - developer ,admin
+Role -policy
+Policies
+Identity providers
+MFA -multi factor authentication
+
+1. IAM User
+*************
+Represents an individual person or service.
+Has long-term credentials (username/password, access keys).
+Can be assigned permissions directly or via groups.
+
+2. Root User
+************
+The account owner (created when the AWS account is first set up).
+Has unrestricted access to all resources.
+Has unrestricted access to all resources.
+Should be used only for account setup and critical tasks.
+Best practice: enable MFA and avoid using it for daily operations.
+
+3. IAM Group
+************
+
+A collection of IAM users.
+Used to manage permissions collectively.
+Example: A "Developers" group with access to EC2 and S3.
+
+4. IAM Role
+**************
+An identity with permissions but no credentials.
+Assumed by trusted entities (users, services, applications).
+Commonly used for cross-account access, EC2 instance profiles, or federated users.
+
+5. IAM Policies
+**************
+JSON documents that define permissions.
+Can be attached to users, groups, or roles.
+Types:
+
+Managed Policies (AWS-managed or customer-managed)
+Inline Policies (embedded directly in a user/group/role)
+
+
+MFA – root account
+Authenticator
+
+Unlimited Secure Object Storage
+
+Buckets – Unique Name across AWS
+Buckets created under Region
+Folder → Folder → Folder
+You can upload the file
+0 KB to 5 TB – One file size
+Secured Storage – Encryption at transit, Encryption at rest
+
+Usage Types:
+
+Frequent usage
+Infrequent
+Archive storage
+
+
+S3 Details:
+
+Whatever you upload, AWS takes a copy of that file in various devices, regions, AZ across AWS
+AWS 99.99% availability – per year 13 minutes can be down
+
+versioning ->adding the version same things releasing version like java
+
+
+Amazon S3 (Simple Storage Service) 
+********************************
+it is object storage service that provides
+Unlimited Secure Object Storage for any amount of data.
+Buckets: Containers for storing objects. Each bucket name must be globally unique across AWS.
+Regions: Buckets are created within a specific AWS region.
+Folder Structure: Logical organization using prefixes (Folder → Subfolder → Files).
+File Size: Supports objects from 0 KB up to 5 TB.
+Security:
+
+Encryption in transit (data moving between client and S3).
+Encryption at rest (data stored in S3).
+
+
+Availability: 99.99% uptime (approx. 13 minutes downtime per year).
+Durability: AWS replicates data across multiple devices and Availability Zones (AZs).
+
+S3 Storage Classes
+*********************
+Standard: For frequent access.
+Infrequent Access (IA): Lower cost for data accessed less often.
+Archive (Glacier): For long-term storage at minimal cost.
+
+S3 Versioning
+***************
+Allows you to keep multiple versions of an object in the same bucket.
+Protects against accidental deletion or overwriting.
+Can be enabled at the bucket level.
+Useful for backup and recovery scenarios.
+
+S3 Static Website Hosting
+*************************
+You can configure an S3 bucket to host a static website.
+Requirements:
+
+Enable Static Website Hosting in bucket properties.
+Upload HTML, CSS, JS files.
+Set index document and error document.
+
+
+Can be combined with Amazon Route 53 for custom domain hosting.
+
+Server Access Logging -> used to get who are logging details
