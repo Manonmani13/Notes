@@ -670,3 +670,394 @@ Set index document and error document.
 Can be combined with Amazon Route 53 for custom domain hosting.
 
 Server Access Logging -> used to get who are logging details
+
+S3 Object Lock
+*****************
+Purpose: Prevents objects from being deleted or overwritten for a fixed time or indefinitely.
+Modes:
+
+Governance Mode: Users with special permissions can override.
+Compliance Mode: No one can delete or overwrite until the retention period ends.
+
+
+Use Case: Regulatory compliance, WORM (Write Once Read Many) storage.
+
+we can give tags n of tags 
+
+2. Cross-Region Replication (CRR)
+-----------------------------------
+Purpose: Automatically replicates objects from one S3 bucket to another in a different AWS region.
+Requirements:
+
+Source and destination buckets must have versioning enabled.
+
+Use Case: Disaster recovery, latency optimization, compliance.
+
+3. S3 Lifecycle Policies
+-------------------------
+Purpose: Automates transitions and deletions of objects based on age.
+Examples:
+
+Move objects to S3 Glacier after 30 days.
+Delete objects after 365 days.
+
+Benefits: Cost optimization.
+
+4. S3 Tags
+-----------
+Purpose: Key-value pairs attached to objects or buckets.
+Use Case:
+
+Apply lifecycle rules to specific objects.
+Cost allocation and resource management.
+
+1. S3 Tags
+-------------
+What: Key-value pairs attached to buckets or objects.
+Purpose:
+
+Organize resources for cost allocation, access control, and lifecycle policies.
+Example:
+
+Environment=Production, Project=Analytics.
+
+2. Transfer Acceleration
+------------------------
+What: Speeds up uploads and downloads to S3 using Amazon CloudFront’s globally distributed edge locations.
+How:
+
+Data travels through optimized AWS network paths instead of the public internet.
+
+Use Case:
+
+Large file uploads from geographically distant clients.
+
+3. S3 Events
+--------------
+What: Notifications triggered by actions on S3 objects (e.g., PUT, DELETE).
+Targets:
+
+Amazon SNS, Amazon SQS, or AWS Lambda.
+
+
+Use Case:
+
+Automatically process images after upload, trigger workflows, etc.
+
+4. Requester Pays
+-----------------
+What: Bucket owner charges requesters for data transfer and request costs.
+Use Case:
+
+Public datasets where the bucket owner doesn’t want to bear download costs.
+
+Note:
+
+Requester must include x-amz-request-payer: requester in the request.
+
+
+The image shows an AWS S3 storage class selection screen with different options. Let me explain each concept in detail:
+
+1. Standard
+------------
+Description:
+
+For frequently accessed data.
+Stored across ≥3 Availability Zones for high durability.
+
+Use Case:
+
+Websites, applications, and active content.
+
+Cost:
+Higher than archival classes but optimized for performance.
+
+2. Intelligent-Tiering
+----------------------
+Description:
+
+For long-lived data with changing or unknown access patterns.
+Automatically moves objects between frequent and infrequent access tiers based on usage.
+
+Minimum Duration:
+
+30 days.
+
+Cost:
+
+Per-object monitoring fee + storage cost.
+
+Use Case:
+
+Data where access frequency is unpredictable.
+
+3. Standard-IA (Infrequent Access)
+--------------------------------
+Description:
+
+For long-lived, infrequently accessed data.
+Stored across ≥3 Availability Zones.
+
+Minimum Duration:
+
+30 days.
+
+Minimum Object Size:
+128 KB.
+
+
+Cost:
+Lower storage cost, but retrieval fees apply.
+
+
+Use Case:
+
+Backup, disaster recovery.
+
+4. One Zone-IA
+--------------
+Description:
+
+Similar to Standard-IA but stored in only 1 Availability Zone.
+For non-critical, infrequently accessed data.
+
+Minimum Duration:
+30 days.
+
+Minimum Object Size:
+128 KB.
+
+Cost:
+Cheaper than Standard-IA.
+
+Use Case:
+Secondary backups, easily reproducible data.
+
+
+5. Glacier
+------------
+Description:
+
+For archival data with retrieval times from minutes to hours.
+Stored across ≥3 Availability Zones.
+
+Minimum Duration:
+
+90 days.
+
+Minimum Object Size:
+40 KB.
+
+
+Cost:
+Very low storage cost, retrieval fees apply.
+
+Use Case:
+Long-term archives, compliance storage.
+
+6. Glacier Deep Archive
+-------------------------
+Description:
+
+For rarely accessed archival data.
+Retrieval times: hours.
+
+
+Minimum Duration:
+180 days.
+
+
+Minimum Object Size:
+40 KB.
+
+
+Cost:
+Lowest storage cost in S3.
+
+
+Use Case:
+Regulatory archives, historical backups.
+
+7. Reduced Redundancy (Not Recommended)
+-------------------------
+Description:
+For frequently accessed, non-critical data.
+Lower durability than Standard.
+
+Use Case:
+Temporary data, thumbnails.
+
+Note:
+AWS recommends avoiding this class.
+
+ Cross Region Replication -> they the user delete the file unfornately. they can access that file from another user login 
+ 
+ object lock -> wont allow you to delete files
+ 
+Bucket level permission -> Remove Block
+
+Amazon Glacier – 3 retrieval options
+**************
+Expedited: 1 to 5 minutes – $0.03 per GB/month, $0.01 per request
+Standard: 3 to 5 hours – $0.01 per GB/month and $0.05 per 1000 requests
+Bulk: 5 to 12 hours – $0.0025 per GB/month and $0.025 per 1000 requests
+Minimum Storage: 90 Days
+
+
+Amazon Glacier Deep Archive – for longer time storage than Glacier Retrieval
+*******************************
+Standard: 12 hours
+Bulk: 48 hours
+Minimum Storage: 180 Days
+
+CloudFront – CDN (Content Delivery Network)
+
+Used to deliver content globally with low latency by caching at edge locations.
+
+
+Global Accelerator
+*****************
+Helps reduce latency by routing traffic through AWS’s global network.
+Notes mention:
+
+Many hubs can cause latency.
+Goal: minimize latency.
+
+Unicast IP vs Anycast IP
+
+Unicast IP: One server holds one IP address.
+Anycast IP: All servers share the same IP address; client is routed to the nearest server.
+
+
+
+AWS Global Accelerator works on Anycast IP concept
+
+Leverages AWS internal network for routing.
+Creates two Anycast IPs:
+
+One for edge location.
+One for your application.
+
+What is AWS CloudFront?
+************************
+CloudFront is a Content Delivery Network (CDN) service that speeds up the delivery of your web content (HTML, CSS, JS, images, videos) by caching it at AWS edge locations worldwide. This reduces latency for users globally.
+
+Typical Frontend Hosting Architecture
+
+
+S3 Bucket
+---------
+Store your static frontend files (React, Angular, Vue, HTML/CSS/JS).
+Enable Static Website Hosting on the bucket.
+
+
+
+CloudFront Distribution
+--------------------
+Connect CloudFront to your S3 bucket as the origin.
+CloudFront caches content at edge locations for fast delivery.
+Add HTTPS using AWS Certificate Manager (ACM).
+
+Route 53 (Optional)
+
+Configure a custom domain and point it to the CloudFront distribution.
+
+AWS Global Accelerator is a networking service that improves the availability and performance of your applications by routing traffic through the AWS global network instead of the public internet.
+
+✅ What It Does
+
+Provides two static Anycast IP addresses that act as fixed entry points for your application.
+Routes user traffic to the nearest healthy AWS endpoint (like EC2, ALB, NLB) using the AWS backbone network.
+Reduces latency and improves reliability compared to standard internet routing.
+
+
+Key Concepts
+
+Anycast IP: All edge locations share the same IP; traffic goes to the closest one.
+Global Network: Uses AWS’s private backbone for faster routing.
+Health Checks: Automatically detects unhealthy endpoints and reroutes traffic.
+
+
+When to Use
+
+Global applications needing low latency (gaming, streaming, SaaS).
+Multi-region deployments for high availability.
+Disaster recovery scenarios.
+
+If you remove outbound rules from a Security Group,
+************************************* 
+the instance cannot initiate any outbound connections. 
+This means no internet access, no API calls, and no communication with other AWS services unless explicitly allowed. 
+Inbound traffic is unaffected, but responses to inbound requests will fail because the instance cannot send data back.
+
+What is RDS?
+
+Amazon Relational Database Service (RDS) is a managed service that makes it easy to set up, operate, and scale a relational database in the cloud.
+
+
+Supported Engines: MySQL, PostgreSQL, MariaDB, Oracle, SQL Server.
+Benefits:
+
+Automated backups
+High availability (Multi-AZ)
+Scalability
+Security (IAM, encryption)
+
+Amazon Glacier Overview
+
+Low-cost storage
+Data retention: Designed for long-term storage (10 years or more)
+Alternative: Serves as an alternative to on-premise magnetic tape storage
+Durability: 99.999999999% (11 nines)
+Cost: $0.004 per GB per month + retrieval cost
+
+mage contains detailed notes about Amazon Glacier retrieval options and S3 Object Lock. Here’s the extracted and organized content:
+
+✅ Amazon Glacier – Retrieval Options
+
+Expedited: 1 to 5 minutes
+Standard: 3 to 5 hours
+Bulk: 5 to 12 hours
+Minimum Storage Duration: 90 days
+
+
+✅ Amazon Glacier Deep Archive
+
+Designed for longer-term storage than Glacier
+Retrieval Times:
+
+Standard: 12 hours
+Bulk: 48 hours
+
+
+Minimum Storage Duration: 180 days
+
+
+✅ S3 Object Lock
+
+Adopt a WORM model (Write Once, Read Many)
+Used for compliance and data immutability
+
+Route 53
+**********
+Managed Domain Name System
+Route 53 is a scalable and highly available DNS service by AWS.
+
+
+How web hosting works
+Explains the relationship between domain names and IP addresses.
+
+
+How the domain name works
+DNS translates human-readable domain names into IP addresses.
+
+
+
+✅ DNS Record Types in Route 53
+
+A Record – Maps a hostname to an IPv4 address.
+AAAA Record – Maps a hostname to an IPv6 address.
+CNAME Record – Maps one hostname to another hostname.
+Alias Record – Maps a hostname to an AWS resource (like EC2, Load Balancer, etc.).
+
+(Note: There’s a typo in the slide: “Resouce” should be “Resource.”)
