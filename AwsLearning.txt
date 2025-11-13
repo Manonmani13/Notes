@@ -1043,15 +1043,11 @@ Route 53
 Managed Domain Name System
 Route 53 is a scalable and highly available DNS service by AWS.
 
-
 How web hosting works
 Explains the relationship between domain names and IP addresses.
 
-
 How the domain name works
 DNS translates human-readable domain names into IP addresses.
-
-
 
 ✅ DNS Record Types in Route 53
 
@@ -1061,3 +1057,141 @@ CNAME Record – Maps one hostname to another hostname.
 Alias Record – Maps a hostname to an AWS resource (like EC2, Load Balancer, etc.).
 
 (Note: There’s a typo in the slide: “Resouce” should be “Resource.”)
+
+DNS (Domain Name System)
+DNS is like the phonebook of the internet. It translates human-readable domain names (like example.com)
+ into IP addresses (like 192.168.1.1) so computers can locate each other on a network.
+
+Amazon Route 53
+Amazon Route 53 is a managed DNS service by AWS that helps you register domain names,
+ route internet traffic to your resources (like EC2, S3, Load Balancers), and check the health of those resources.
+ 
+Replica
+********
+A replica is a duplicate of the main database used mainly for read operations to improve performance and reduce load on the primary database.
+
+Read Replica: A read-only copy of the primary database that helps scale read-heavy workloads.
+Promotion: You can promote a read replica to become a standalone writable database if needed.
+
+Advantage over using RDS versus deploying DB on EC2
+
+
+RDS is a managed service:
+-------------------------
+Automated provisioning, OS patching
+Continuous backups and restore to specific timestamp (Point in Time Restore)!
+Monitoring dashboards
+Read replicas for improved read performance
+Multi AZ setup for DR (Disaster Recovery)
+Maintenance windows for upgrades
+Scaling capability (vertical and horizontal)
+Storage backed by EBS (gp2 or io1)
+
+BUT you can’t SSH into your instances  
+
+What is RDS Auto Scaling?
+Amazon RDS offers auto scaling for storage and read replicas (Aurora only). This helps handle unpredictable workloads without manual intervention.
+
+Storage Auto Scaling: Automatically increases allocated storage when free space drops below a threshold.
+Aurora Read Replica Auto Scaling: Adds/removes read replicas based on traffic load.
+Aurora Serverless v2: Scales compute capacity up/down in seconds for both read and write workloads.
+
+
+🔍 Key Features
+----------------
+Storage Auto Scaling
+
+Triggered when:
+
+Free space ≤ 10% of allocated storage.
+Condition persists for ≥ 5 minutes.
+At least 6 hours since last modification.
+
+Adds storage in increments of:
+
+10 GiB or 10% of current size, whichever is greater.
+
+Requires setting a maximum storage threshold (e.g., 1260 GiB for a 1000 GiB DB).
+Works with gp2, io1, io2 storage types.
+Monitored via CloudWatch FreeStorageSpace metric. [docs.aws.amazon.com]
+
+Aurora Read Replica Auto Scaling
+---------------------------------
+Uses Application Auto Scaling.
+Scales out when read traffic is high, scales in when low.
+Write node still scales vertically only. [stackoverflow.com]
+
+
+
+Aurora Serverless v2
+----------------------
+Fully elastic scaling for both reads and writes.
+Ideal for unpredictable workloads.
+
+Route 53 Routing Policies
+****************************
+1. Simple Routing Policy
+
+Purpose: Routes traffic to a single resource (like one EC2 instance or one load balancer).
+Use Case: When you have only one server or endpoint for your domain/subdomain.
+Example:
+
+Domain: example.com
+Subdomain: app.example.com
+You create a Simple record pointing app.example.com to an IP or ELB DNS name.
+
+
+Behavior: No health checks or load balancing—just a direct mapping.
+
+
+✅ 2. Weighted Routing Policy
+
+Purpose: Distribute traffic across multiple resources based on assigned weights.
+Use Case: Canary deployments or A/B testing.
+Example:
+
+Subdomain: api.example.com
+Two endpoints:
+
+api-v1.example.com → Weight 70
+api-v2.example.com → Weight 30
+
+
+Route 53 sends 70% traffic to v1 and 30% to v2.
+
+
+Behavior: You can adjust weights anytime for gradual migration.
+
+
+✅ 3. Latency Routing Policy
+
+Purpose: Direct users to the resource with the lowest latency based on their geographic location.
+Use Case: Global applications with servers in multiple regions.
+Example:
+
+Subdomain: game.example.com
+Two resources:
+
+us-east-1 → ELB DNS
+ap-south-1 → ELB DNS
+
+
+A user in India will be routed to ap-south-1 for better latency.
+
+
+Behavior: Uses AWS latency measurements to decide routing.
+
+AWS Aurora
+***********
+Not open source
+Proprietary for AWS
+Compatible with PostgreSQL and MySQL
+https://aws.amazon.com/blogs/database/amazon-aurora-as-an-alternative-to-oracle-rac/
+Alternative for Oracle RAC (Real Application Clusters)
+Lot of optimization: 5X performance improvement over MySQL
+3X performance of PostgreSQL
+Automatically scales up to 64TB
+MySQL Read Replicas: 5
+Aurora Read Replicas: 15 with faster replication
+HA native
+However, 20% costlier than RDS (MySQL, PostgreSQL)
