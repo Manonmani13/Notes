@@ -1417,3 +1417,51 @@ PrivateLink: For exposing services privately without full VPC connectivity.
 
 VPC Transit Gateway
 ********************
+What is AWS Transit Gateway?
+
+A network transit hub that interconnects:
+
+Multiple VPCs
+On-premises networks via VPN or Direct Connect
+SD-WAN appliances
+
+
+Provides centralized routing and high scalability, supporting thousands of VPCs and VPN connections.
+Uses route tables for traffic control between attachments (VPCs, VPNs, Direct Connect gateways).
+Supports inter-region peering for global connectivity.
+All traffic between AWS data centers is encrypted at the physical layer. [docs.aws.amazon.com], [cloudoptimo.com], [k21academy.com]
+
+
+✅ Key Features
+
+Hub-and-Spoke Model: Simplifies connectivity by routing all traffic through a single gateway.
+Centralized Routing: Reduces complexity compared to VPC peering.
+Scalability: Handles thousands of attachments and high bandwidth.
+Hybrid Cloud Support: Integrates with on-premises networks via VPN or Direct Connect.
+Flexible Routing: Custom route tables for granular traffic control.
+Security & Isolation: Supports segmentation of traffic between environments. [npblue.com], [dev.to]
+
+
+✅ How It Works
+
+Create a Transit Gateway in your AWS region.
+Attach VPCs and VPNs:
+
+Each VPC or VPN connection becomes an attachment.
+
+
+Configure Route Tables:
+
+Define how traffic flows between attachments.
+
+
+Manage & Monitor:
+
+Use CloudWatch and Transit Gateway Network Manager for visibility and performance metrics.
+
+INTERVIEW QUESTIONS
+***********************
+1. we have around 25 buckets in S3. In this one bucket has nearly 500 documents.
+All documents are very sensitive or confidenical documents.
+One New admin added to our team. And he deleted our confidential documents bucket. How to recover this?
+ANs: cross region replication in another account
