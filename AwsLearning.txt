@@ -913,8 +913,7 @@ Minimum Storage: 180 Days
 CloudFront – CDN (Content Delivery Network)
 
 Used to deliver content globally with low latency by caching at edge locations.
-
-
+**********************
 Global Accelerator
 *****************
 Helps reduce latency by routing traffic through AWS’s global network.
@@ -929,7 +928,6 @@ Unicast IP: One server holds one IP address.
 Anycast IP: All servers share the same IP address; client is routed to the nearest server.
 
 
-
 AWS Global Accelerator works on Anycast IP concept
 
 Leverages AWS internal network for routing.
@@ -937,7 +935,7 @@ Creates two Anycast IPs:
 
 One for edge location.
 One for your application.
-
+**********************
 What is AWS CloudFront?
 ************************
 CloudFront is a Content Delivery Network (CDN) service that speeds up the delivery of your web content (HTML, CSS, JS, images, videos) by caching it at AWS edge locations worldwide. This reduces latency for users globally.
@@ -983,7 +981,7 @@ When to Use
 Global applications needing low latency (gaming, streaming, SaaS).
 Multi-region deployments for high availability.
 Disaster recovery scenarios.
-
+**********************************
 If you remove outbound rules from a Security Group,
 ************************************* 
 the instance cannot initiate any outbound connections. 
@@ -1002,9 +1000,9 @@ Automated backups
 High availability (Multi-AZ)
 Scalability
 Security (IAM, encryption)
-
+*************************
 Amazon Glacier Overview
-
+**************************
 Low-cost storage
 Data retention: Designed for long-term storage (10 years or more)
 Alternative: Serves as an alternative to on-premise magnetic tape storage
@@ -1037,7 +1035,7 @@ Minimum Storage Duration: 180 days
 
 Adopt a WORM model (Write Once, Read Many)
 Used for compliance and data immutability
-
+**********
 Route 53
 **********
 Managed Domain Name System
@@ -1127,7 +1125,7 @@ Aurora Serverless v2
 ----------------------
 Fully elastic scaling for both reads and writes.
 Ideal for unpredictable workloads.
-
+*************************
 Route 53 Routing Policies
 ****************************
 1. Simple Routing Policy
@@ -1175,12 +1173,10 @@ Two resources:
 us-east-1 → ELB DNS
 ap-south-1 → ELB DNS
 
-
 A user in India will be routed to ap-south-1 for better latency.
 
-
 Behavior: Uses AWS latency measurements to decide routing.
-
+**************
 AWS Aurora
 ***********
 Not open source
@@ -1195,3 +1191,229 @@ MySQL Read Replicas: 5
 Aurora Read Replicas: 15 with faster replication
 HA native
 However, 20% costlier than RDS (MySQL, PostgreSQL)
+*******************
+Failover Routing Policy
+**************************
+Purpose: Provides high availability by routing traffic to a primary resource and switching to a secondary resource if the primary becomes unhealthy.
+How It Works:
+
+You create two records for the same domain/subdomain:
+
+Primary: Points to main server (e.g., app.example.com → Primary ELB).
+Secondary: Points to backup server (e.g., app.example.com → DR ELB).
+
+Attach health checks to the primary record.
+If health check fails, Route 53 automatically routes traffic to the secondary.
+
+Use Case: Disaster Recovery (DR) setup for critical applications.
+************************
+Geolocation Routing Policy
+***************************
+Purpose: Routes traffic based on the geographic location of the user.
+How It Works:
+
+You define records for different regions:
+
+Example:
+
+Users from US → us.example.com
+Users from India → in.example.com
+Default → global.example.com
+
+Route 53 uses the user’s IP to determine location and routes accordingly.
+
+Use Case:
+
+Deliver localized content.
+Comply with regional regulations.
+Optimize performance for regional servers.
+*****************
+DynamoDB
+***************
+NoSQL Database
+Distributed
+Scales to massive workloads
+Fast, consistent
+Low cost and auto-scale
+Tables (No Database)
+Primary key
+Item (row) → Attributes → Column
+Each attribute maximum size: 400 KB
+
+Data types supported:
+
+Scalar type: String, Number, Binary, Boolean, and Null
+Document type: List, Map
+
+AWS DynamoDB – NoSQL Database Introduction
+***************************************
+Type: NoSQL, fully managed, serverless database service.
+Key Characteristics:
+
+Distributed: Data is replicated across multiple servers for high availability.
+Massive Scalability: Handles millions of requests per second.
+Performance: Fast and consistent with single-digit millisecond latency.
+Cost Efficiency: Pay-per-use model with auto-scaling.
+Schema-less: Uses Tables (not traditional databases).
+
+
+Core Concepts
+
+Table: The top-level container for data (no separate database concept).
+Primary Key: Uniquely identifies each item.
+
+Can be Partition Key or Partition + Sort Key.
+
+
+Item: Equivalent to a row in relational DB.
+Attributes: Equivalent to columns.
+Max Attribute Size: 400 KB per item.
+
+
+Data Types
+
+Scalar Types: String, Number, Binary, Boolean, Null.
+Document Types: List, Map (supports nested JSON-like structures).
+**************
+VPC
+******
+default vpc port no is : 172
+customized ip range
+more secured networking
+
+
+NAT (Network Address Translation) Setup Notes
+**********************************************
+Command:
+Shellchmod 400 privateinstance.pemssh ec2-user@privateinstance-ip -i privateinstance.pemShow more lines
+
+Issue: Cannot ping google.com because the private instance does not have internet access.
+
+
+NAT Details
+
+NAT = Network Address Translation
+NAT Instance:
+
+Requires payment since it is a separate instance.
+If network traffic increases, you need a higher NAT instance or NAT Gateway.
+
+
+Cost:
+
+NAT Instance or NAT Gateway ≈ $0.056 per NAT Gateway hour.
+
+Configuration
+
+VPC → NAT Gateway → Public Subnet
+
+Create Elastic IP address.
+
+Private Route Table:
+
+Add route 0.0.0.0/0 → NAT Gateway.
+***************************************
+Amazon VPC lets you create a private, isolated network within AWS where you can launch resources like EC2, RDS, and more. It gives you full control over:
+IP address ranges
+Subnets
+Route tables
+Network gateways
+Security settings
+
+Key Components
+
+CIDR Block
+Defines the IP range for your VPC (e.g., 10.0.0.0/16).
+
+Subnets
+Divide VPC into smaller networks.
+Public Subnet: Has internet access via Internet Gateway.
+Private Subnet: No direct internet access; uses NAT Gateway for outbound traffic.
+
+Route Tables
+
+Control traffic routing between subnets and external networks.
+
+Internet Gateway (IGW)
+
+Enables communication between VPC and the internet.
+
+NAT Gateway / NAT Instance
+
+Allows private instances to access the internet without exposing them.
+
+Security Groups & NACLs
+
+Security Groups: Instance-level firewall.
+NACLs: Subnet-level firewall.
+
+Basic Architecture
+
+VPC → Public Subnet (EC2 + IGW)
+VPC → Private Subnet (EC2 + NAT Gateway)
+Route tables define connectivity.
+
+
+Why VPC?
+
+Isolation and security.
+Custom networking.
+Hybrid cloud setups (VPN or Direct Connect).
+
+
+VPC Peering
+****************
+VPC peering is a networking connection between two virtual private clouds
+that allows them to communicate privately using private ip addresses.
+
+why do we need vpc peering?
+*************************
+To connect resources in different VPCs without using public internet.
+For secure communication between environments (e.g., dev and prod).
+To share services like databases or internal APIs across VPCs.
+
+Key Characteristics
+*************************
+Private Communication: Traffic stays within AWS backbone, not the public internet.
+One-to-One Relationship: Each peering connection links two VPCs only.
+No Transitive Peering: If VPC-A is peered with VPC-B, and VPC-B with VPC-C, A cannot talk to C unless you create a separate peering connection.
+Same or Different Accounts: VPCs can belong to the same AWS account or different accounts.
+Same or Different Regions: Supports inter-region peering.
+
+How VPC Peering Works
+**********************
+Create a Peering Connection:
+
+Initiator sends a request to the other VPC.
+The other VPC accepts the request.
+
+Update Route Tables:
+Add routes in both VPCs pointing to the peering connection for the destination CIDR.
+
+Update Security Groups:
+Allow traffic from the other VPC’s CIDR range.
+
+DNS Resolution:
+Enable DNS resolution for private hostnames if needed.
+
+Limitations
+No Overlapping CIDR Blocks: VPCs must have unique IP ranges.
+No Transitive Routing: Cannot route through a third VPC.
+No Edge-to-Edge Routing: Cannot route traffic to VPN or Direct Connect through peering.
+Bandwidth: Uses underlying AWS infrastructure, but not unlimited.
+
+
+Use Cases
+
+Multi-Account Architecture: Connect VPCs from different accounts.
+Shared Services: Centralized logging, authentication, or database VPC.
+Hybrid Cloud: Combine workloads across regions.
+
+
+Alternatives
+
+AWS Transit Gateway: For complex multi-VPC architectures.
+PrivateLink: For exposing services privately without full VPC connectivity.
+
+VPC Transit Gateway
+********************
