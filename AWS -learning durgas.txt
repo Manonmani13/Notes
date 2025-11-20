@@ -1,0 +1,98 @@
+NETWORK AND HOST (DEVICE)
+
+Devices that belongs to same logical network they will communicate with each other
+
+the devices that belongs to different logical network they will not communicate each other
+
+locagical network is based on ip address
+
+we cannot say the device belongs to same or different network with submask
+
+Computer1 -->192.168.2.100 -->subnet mask
+
+Computer2 -->192.168.2.150 -->subnet mask
+
+subnet mask is also a logical 32 bit number same like ip address. this subnet mask will divide the ip address network portion and host portion
+192.168.1.100 ----->N:N:N:H->H -->0-255
+255.255.255.0 --->11111111.11111111.11111111.00000000
+
+in subnetmask 1 number belongs to submask and 0 number belongs to host
+
+IVANA
+IPV4  is a 32 bit address ---> 2^32 -->4.2 billion
+
+0-255
+class A -> 0-127 ->255.0.0
+class B -> 128-191 ->255.255.0.0
+class C -> 192-223 -> 255.255.255.0
+class D -> 224-239 ->
+class E ->240-255 ->
+
+First octet
+
+A.B.C.D
+In each octet there are 8 bits
+ 				AWS -
+
+NETWORKING:
+
+TWO OR MORE DEVICES INTERCONNECTED WITH EACH OTHER (WIRED WIRELESS)
+NETWORKING
+ARPANET
+IANA
+
+IP ADDRESS
+THERE ARE TWO TYPES OF IP
+IPV4 -----> 32-BIT ADDRESS
+IPV6 -----> 128 BIT-ADDRESS
+
+IPV4 address
+==============
+A.B.C.D
+BINARY -----> 0,1 -----> MACHINE
+DEC -------> 0 TO 9 -----> HUMAN UNDRESTANDABEL FORMAT
+
+10101100 ------> 1*2^7 + 0*2^6 + 1*2^5 + 0*2^4 + 1*2^3 + 1*2^2 + 0*2^1 + 0*2^0
+128 + 32 + 8 + 4 ------> 172
+
+00000000.00000000.00000000.00000000 --------> 0.0.0.0
+11111111.11111111.11111111.11111111 --------> 255.255.255.255
+
+32 BITS ARE DIVIDED INTO 4 PORTIONS EACH PORTION IS CALLED AS OCTET
+8BITS = 1BYTE
+THE MAX NUMBER IN IP ADDRESS IS 255
+NETWORK AND HOST (DEVICE)
+
+Devices that belongs to same logical network they will communicate with each other
+
+this devices that belongs to different logical network they will not communicate with each other
+
+logical network is based on ip address
+
+we cannot say the device  belongs to same or different network with subnetmask
+
+computer1 ----> 192.168.1.100 ----> subnet mask
+computer2 ----> 192.168.2.150 ----> subnet mask
+subnet mask is also a logical 32 bit number same like ip address. this subnet mask will divide the ip address network portion and host portion.
+
+192.168.1.100 ------> N.N.N.H ----> H ----> 0–255
+255.255.255.0 ----> 11111111.11111111.11111111.00000000
+
+in subnetmask 1 number belongs to network and 0 number belongs to host
+
+IANA
+
+IPV4 IS A 32 BIT ADDRESS ----> 2^32 ----> 4.2 BILLION
+
+0–255
+CLASS-A ----> 0–127 ----> 255.0.0.0
+CLASS-B ---->128-191->255.255.0.0
+CLASS-C -----> 192- 223 -> 255.255.255.0
+CLASS-D--> 224-239 ->used in hub
+CLASS-E ---->240-255 
+
+FIRST OCTET
+A.B.C.D
+
+IN EACH OCTET THERE ARE 8 BITS
+01111111 ----> 127
