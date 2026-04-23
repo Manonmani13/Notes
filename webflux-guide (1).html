@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spring WebFlux – Learning Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --bg: #060910;
+  --surface: #0e1118;
+  --card: #111520;
+  --border: #1e2438;
+  --cyan: #22d3ee;
+  --purple: #a78bfa;
+  --green: #4ade80;
+  --amber: #fbbf24;
+  --red: #f87171;
+  --text: #dde4f0;
+  --muted: #6b7794;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+/* SIDEBAR NAV */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 220px;
+  height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 28px 0;
+  overflow-y: auto;
+  z-index: 100;
+}
+.sidebar-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--cyan);
+  padding: 0 20px 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sidebar-logo span { font-size: 1.3rem; }
+.nav-section {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .65rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+  padding: 10px 20px 4px;
+}
+.nav-link {
+  display: block;
+  padding: 7px 20px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: .88rem;
+  transition: all .2s;
+  border-left: 2px solid transparent;
+}
+.nav-link:hover, .nav-link.active {
+  color: var(--cyan);
+  border-left-color: var(--cyan);
+  background: rgba(34,211,238,.05);
+}
+
+/* MAIN */
+main {
+  margin-left: 220px;
+  padding: 40px 48px 80px;
+  max-width: 900px;
+}
+
+/* HERO */
+.hero {
+  padding: 48px 0 40px;
+  position: relative;
+}
+.hero-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--cyan);
+  background: rgba(34,211,238,.08);
+  border: 1px solid rgba(34,211,238,.2);
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 20px;
+  margin-bottom: 18px;
+}
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #e2e8f0 30%, var(--cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 14px;
+}
+.hero p { color: var(--muted); max-width: 520px; font-size: .95rem; }
+
+/* SECTION HEADING */
+.sec-head {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 52px 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sec-head .num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .72rem;
+  color: var(--cyan);
+  background: rgba(34,211,238,.08);
+  border: 1px solid rgba(34,211,238,.2);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.sec-head::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* CARD */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 22px;
+  margin-bottom: 14px;
+  transition: border-color .2s;
+}
+.card:hover { border-color: #2e3550; }
+.card h3 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: .95rem;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card p, .card li { color: #8e99b8; font-size: .88rem; }
+.card ul { padding-left: 18px; }
+.card li { margin-bottom: 3px; }
+
+/* COMPARE */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+@media(max-width:600px){ .compare { grid-template-columns:1fr; } }
+.cbox {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+.cbox.bad  { border-top: 3px solid var(--red); }
+.cbox.good { border-top: 3px solid var(--green); }
+.cbox h4 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: .88rem;
+  margin-bottom: 10px;
+}
+.cbox ul { list-style: none; }
+.cbox li { color: #8e99b8; font-size: .85rem; padding: 3px 0; }
+.cbox li::before { content: '› '; color: var(--muted); }
+
+/* ANALOGY */
+.analogy {
+  background: linear-gradient(135deg, rgba(167,139,250,.05), rgba(34,211,238,.05));
+  border: 1px solid rgba(167,139,250,.18);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.emoji { font-size: 1.6rem; flex-shrink: 0; }
+.analogy p { color: #9aa3bf; font-size: .9rem; }
+.analogy strong { color: var(--purple); }
+
+/* CODE */
+pre {
+  background: #08090f;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .78rem;
+  color: var(--cyan);
+  overflow-x: auto;
+  margin: 12px 0;
+  line-height: 1.7;
+}
+.kw { color: var(--purple); }
+.cls { color: var(--amber); }
+.str { color: var(--green); }
+.cm { color: var(--muted); font-style: italic; }
+
+/* TABLE */
+.tbl-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+table { width: 100%; border-collapse: collapse; font-size: .87rem; }
+th {
+  background: rgba(34,211,238,.06);
+  color: var(--cyan);
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: .78rem;
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+td { padding: 9px 16px; color: #8e99b8; border-bottom: 1px solid rgba(30,36,56,.7); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,.015); }
+
+/* FLOW */
+.flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 14px 0;
+}
+.fstep {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
+  color: var(--cyan);
+}
+.farrow { color: var(--muted); }
+
+/* GRID */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 12px; margin-bottom: 14px; }
+@media(max-width:600px){ .grid2{grid-template-columns:1fr;} }
+
+/* HIGHLIGHT CARDS */
+.hcard {
+  border-radius: 12px;
+  padding: 18px 20px;
+  border: 1px solid;
+}
+.hcard h4 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: .92rem;
+  margin-bottom: 8px;
+}
+.hcard ul { list-style: none; }
+.hcard li { font-size: .85rem; padding: 2px 0; }
+.hcard li::before { content: '✦ '; }
+.hcard.cyan  { background: rgba(34,211,238,.04);  border-color: rgba(34,211,238,.2);  color: #88d8ec; }
+.hcard.cyan h4, .hcard.cyan li::before { color: var(--cyan); }
+.hcard.purple{ background: rgba(167,139,250,.04); border-color: rgba(167,139,250,.2); color: #b8abee; }
+.hcard.purple h4, .hcard.purple li::before { color: var(--purple); }
+.hcard.green { background: rgba(74,222,128,.04);  border-color: rgba(74,222,128,.2);  color: #90dba8; }
+.hcard.green h4, .hcard.green li::before { color: var(--green); }
+.hcard.amber { background: rgba(251,191,36,.04);  border-color: rgba(251,191,36,.2);  color: #ddb87a; }
+.hcard.amber h4, .hcard.amber li::before { color: var(--amber); }
+.hcard.red   { background: rgba(248,113,113,.04); border-color: rgba(248,113,113,.2); color: #d9959a; }
+.hcard.red h4, .hcard.red li::before { color: var(--red); }
+
+/* TAGS */
+.tag {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .72rem;
+  padding: 2px 9px;
+  border-radius: 5px;
+  margin: 2px;
+}
+.tc { background: rgba(34,211,238,.1);  color: var(--cyan);   border: 1px solid rgba(34,211,238,.2); }
+.tp { background: rgba(167,139,250,.1); color: var(--purple); border: 1px solid rgba(167,139,250,.2); }
+.tg { background: rgba(74,222,128,.1);  color: var(--green);  border: 1px solid rgba(74,222,128,.2); }
+.ta { background: rgba(251,191,36,.1);  color: var(--amber);  border: 1px solid rgba(251,191,36,.2); }
+.tr { background: rgba(248,113,113,.1); color: var(--red);    border: 1px solid rgba(248,113,113,.2); }
+
+/* LIFECYCLE */
+.lc { border-left: 2px solid var(--border); padding-left: 20px; margin: 14px 0; }
+.lc-item {
+  position: relative;
+  padding: 10px 0;
+}
+.lc-item::before {
+  content: '';
+  width: 10px; height: 10px;
+  background: var(--cyan);
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+  position: absolute;
+  left: -26px; top: 15px;
+}
+.lc-item strong {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .8rem;
+  color: var(--cyan);
+  display: block;
+  margin-bottom: 3px;
+}
+.lc-item p { font-size: .87rem; color: var(--muted); }
+
+/* TIP */
+.tip {
+  border-radius: 10px;
+  padding: 13px 16px;
+  margin: 12px 0;
+  font-size: .88rem;
+  display: flex;
+  gap: 10px;
+}
+.tip.warn { background: rgba(248,113,113,.05); border: 1px solid rgba(248,113,113,.2); color: #e4a0a5; }
+.tip.info { background: rgba(74,222,128,.05);  border: 1px solid rgba(74,222,128,.2);  color: #8ed4a6; }
+.tip.note { background: rgba(251,191,36,.05);  border: 1px solid rgba(251,191,36,.2);  color: #d4b07a; }
+
+/* OPERATOR GRID */
+.op-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(230px,1fr)); gap: 12px; margin-bottom: 14px; }
+.op {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+}
+.op code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .82rem;
+  color: var(--amber);
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.op p { color: var(--muted); font-size: .84rem; }
+
+/* SCROLL REVEAL */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.reveal.shown { opacity: 1; transform: translateY(0); }
+
+/* MOBILE */
+@media(max-width:768px){
+  .sidebar { display: none; }
+  main { margin-left: 0; padding: 24px 18px 60px; }
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo"><span>⚡</span> WebFlux</div>
+  <div class="nav-section">Basics</div>
+  <a href="#blocking" class="nav-link">Blocking vs Reactive</a>
+  <a href="#webflux" class="nav-link">What is WebFlux?</a>
+  <a href="#monoflux" class="nav-link">Mono &amp; Flux</a>
+  <div class="nav-section">Core Concepts</div>
+  <a href="#lifecycle" class="nav-link">Lifecycle</a>
+  <a href="#execution" class="nav-link">Execution Model</a>
+  <a href="#eventloop" class="nav-link">Event Loop</a>
+  <a href="#requestflow" class="nav-link">Request Flow</a>
+  <div class="nav-section">Operators</div>
+  <a href="#operators" class="nav-link">Operators</a>
+  <a href="#errorhandling" class="nav-link">Error Handling</a>
+  <a href="#schedulers" class="nav-link">Schedulers</a>
+  <div class="nav-section">Advanced</div>
+  <a href="#hotcold" class="nav-link">Hot vs Cold</a>
+  <a href="#backpressure" class="nav-link">Backpressure</a>
+  <a href="#streaming" class="nav-link">Streaming</a>
+  <a href="#whentouse" class="nav-link">When to Use</a>
+  <div class="nav-section">Advanced</div>
+  <a href="#webclient" class="nav-link">WebClient Deep Dive</a>
+  <a href="#functionalrouting" class="nav-link">Functional Routing</a>
+  <a href="#r2dbc" class="nav-link">R2DBC (Reactive DB)</a>
+  <a href="#stepverifier" class="nav-link">Testing: StepVerifier</a>
+  <a href="#websocket" class="nav-link">WebSocket</a>
+  <a href="#security" class="nav-link">Security</a>
+  <a href="#context" class="nav-link">Context Propagation</a>
+  <a href="#fullapi" class="nav-link">Full CRUD API</a>
+</nav>
+
+<!-- MAIN -->
+<main>
+
+  <!-- HERO -->
+  <div class="hero reveal">
+    <div class="hero-eyebrow">Spring Framework 5+</div>
+    <h1>Spring WebFlux<br>Visual Learning Guide</h1>
+    <p>From blocking basics to reactive streams — explained with real-life analogies, clean code, and clear visuals.</p>
+  </div>
+
+  <!-- 1. BLOCKING VS REACTIVE -->
+  <div id="blocking" class="reveal">
+    <div class="sec-head"><span class="num">01</span> Blocking vs Reactive</div>
+
+    <div class="compare">
+      <div class="cbox bad">
+        <h4>❌ Blocking (Traditional)</h4>
+        <ul>
+          <li>Thread waits until task finishes</li>
+          <li>Cannot do anything else</li>
+          <li>One thread per request</li>
+          <li>Used in Spring MVC, JDBC</li>
+        </ul>
+      </div>
+      <div class="cbox good">
+        <h4>✅ Reactive (Non-blocking)</h4>
+        <ul>
+          <li>Thread does NOT wait</li>
+          <li>Continues other work</li>
+          <li>Few threads, many requests</li>
+          <li>Used in WebFlux, WebClient</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="compare">
+      <div class="analogy" style="margin-bottom:0">
+        <div class="emoji">🍵</div>
+        <p><strong>Blocking</strong> — You order tea. You <em>stand and stare</em> at the counter until it's ready. You can't move. That's blocking.</p>
+      </div>
+      <div class="analogy" style="margin-bottom:0">
+        <div class="emoji">🍕</div>
+        <p><strong>Reactive</strong> — You order food, get a token, sit down, browse your phone. They <em>call you when it's ready</em>. That's non-blocking.</p>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Feature</th><th>RestTemplate (Blocking)</th><th>WebClient (Reactive)</th></tr>
+        <tr><td>Thread model</td><td>1 thread per request</td><td>Event loop – shared threads</td></tr>
+        <tr><td>Waiting</td><td>Thread waits idle</td><td>Thread moves on</td></tr>
+        <tr><td>Scalability</td><td>Limited</td><td>High</td></tr>
+        <tr><td>Style</td><td>Old/Synchronous</td><td>Modern/Async</td></tr>
+      </table>
+    </div>
+
+    <pre><span class="cm">// ❌ Blocking – thread waits here</span>
+<span class="cls">String</span> data = restTemplate.getForObject(url, <span class="cls">String</span>.class);
+
+<span class="cm">// ✅ Reactive – returns immediately, subscribes later</span>
+<span class="cls">Mono</span>&lt;<span class="cls">String</span>&gt; data = webClient.get().uri(url).retrieve().bodyToMono(<span class="cls">String</span>.class);</pre>
+  </div>
+
+  <!-- 2. WHAT IS WEBFLUX -->
+  <div id="webflux" class="reveal">
+    <div class="sec-head"><span class="num">02</span> What is Spring WebFlux?</div>
+
+    <div class="card">
+      <h3>🌊 Spring WebFlux</h3>
+      <p>A <strong style="color:var(--cyan)">non-blocking, reactive web framework</strong> introduced in Spring 5. Built on top of <strong style="color:var(--purple)">Project Reactor</strong> and handles HTTP requests using reactive streams.</p>
+    </div>
+
+    <div class="grid3">
+      <div class="hcard cyan">
+        <h4>⚡ Non-blocking</h4>
+        <ul><li>No thread waiting</li><li>Event-loop based</li><li>Netty server</li></ul>
+      </div>
+      <div class="hcard purple">
+        <h4>📦 Project Reactor</h4>
+        <ul><li>Mono – 0 or 1 item</li><li>Flux – 0 to N items</li><li>Reactive Streams API</li></ul>
+      </div>
+      <div class="hcard green">
+        <h4>🎯 Goal</h4>
+        <ul><li>More requests</li><li>Fewer threads</li><li>Less memory</li></ul>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="hcard amber">
+        <h4>✅ Use WebFlux When</h4>
+        <ul>
+          <li>Chat / notification apps</li>
+          <li>Streaming APIs</li>
+          <li>High concurrency</li>
+          <li>Microservices</li>
+        </ul>
+      </div>
+      <div class="hcard red">
+        <h4>❌ Disadvantages</h4>
+        <ul>
+          <li>Hard to debug</li>
+          <li>Steep learning curve</li>
+          <li>Bad with blocking DBs</li>
+          <li>Overkill for simple apps</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📡 Core Vocabulary</h3>
+      <br>
+      <div class="tbl-wrap" style="border:none;background:transparent">
+        <table>
+          <tr><th>Term</th><th>What it means</th></tr>
+          <tr><td><span class="tag tc">Publisher</span></td><td>Sends data — Mono or Flux</td></tr>
+          <tr><td><span class="tag tp">Subscriber</span></td><td>Receives the data</td></tr>
+          <tr><td><span class="tag tg">Subscription</span></td><td>Connection between publisher and subscriber</td></tr>
+          <tr><td><span class="tag ta">Backpressure</span></td><td>Subscriber controls how much data it receives</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. MONO & FLUX -->
+  <div id="monoflux" class="reveal">
+    <div class="sec-head"><span class="num">03</span> Mono &amp; Flux</div>
+
+    <div class="compare">
+      <div class="hcard cyan">
+        <h4>🔵 Mono — 0 or 1 item</h4>
+        <ul>
+          <li>Single API response</li>
+          <li>Get user by ID</li>
+          <li>Save one record</li>
+        </ul>
+      </div>
+      <div class="hcard purple">
+        <h4>🟣 Flux — 0 to N items</h4>
+        <ul>
+          <li>Get all users list</li>
+          <li>Streaming / live data</li>
+          <li>File chunks</li>
+        </ul>
+      </div>
+    </div>
+
+    <pre><span class="cm">// Mono – single value</span>
+<span class="cls">Mono</span>&lt;<span class="cls">String</span>&gt; mono = <span class="cls">Mono</span>.just(<span class="str">"Hello"</span>);
+
+<span class="cm">// Flux – multiple values</span>
+<span class="cls">Flux</span>&lt;<span class="cls">String</span>&gt; flux = <span class="cls">Flux</span>.just(<span class="str">"Java"</span>, <span class="str">"Spring"</span>, <span class="str">"WebFlux"</span>);
+
+<span class="cm">// Mono – empty</span>
+<span class="cls">Mono</span>&lt;<span class="cls">String</span>&gt; empty = <span class="cls">Mono</span>.empty();
+
+<span class="cm">// Mono – error</span>
+<span class="cls">Mono</span>&lt;<span class="cls">String</span>&gt; error = <span class="cls">Mono</span>.error(<span class="kw">new</span> <span class="cls">RuntimeException</span>(<span class="str">"Failed!"</span>));</pre>
+
+    <div class="card">
+      <h3>🎬 Three Ways a Stream Can End</h3>
+      <br>
+      <div class="grid3">
+        <div class="op">
+          <code>onNext → onComplete</code>
+          <p>Normal — emits data then completes successfully</p>
+        </div>
+        <div class="op">
+          <code>onComplete (empty)</code>
+          <p>No data — just completes with nothing</p>
+        </div>
+        <div class="op">
+          <code>onError</code>
+          <p>Something went wrong — stream stops immediately</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. LIFECYCLE -->
+  <div id="lifecycle" class="reveal">
+    <div class="sec-head"><span class="num">04</span> Reactive Stream Lifecycle</div>
+
+    <div class="analogy">
+      <div class="emoji">🍔</div>
+      <p>
+        <strong>Mono/Flux</strong> = You ordered food &nbsp;|&nbsp;
+        <strong>subscribe()</strong> = You confirmed the order &nbsp;|&nbsp;
+        <strong>onNext</strong> = Food arrives &nbsp;|&nbsp;
+        <strong>onComplete</strong> = Order done &nbsp;|&nbsp;
+        <strong>onError</strong> = Order failed
+      </p>
+    </div>
+
+    <div class="lc">
+      <div class="lc-item"><strong>1. Create</strong><p>Define Mono or Flux — nothing happens yet</p></div>
+      <div class="lc-item"><strong>2. Subscribe</strong><p>Trigger the pipeline — data starts flowing only now</p></div>
+      <div class="lc-item"><strong>3. onNext(value)</strong><p>Each item emitted to the subscriber</p></div>
+      <div class="lc-item"><strong>4. onComplete / onError</strong><p>Stream ends normally or with an error</p></div>
+    </div>
+
+    <div class="tip note">💡 <span>A Mono/Flux does <strong>nothing</strong> until you call <code>subscribe()</code>. It's lazy!</span></div>
+
+    <pre><span class="cls">Mono</span>&lt;<span class="cls">String</span>&gt; mono = <span class="cls">Mono</span>.just(<span class="str">"Hello"</span>)
+    .map(<span class="cls">String</span>::toUpperCase);
+
+<span class="cm">// Nothing runs until this line ↓</span>
+mono.subscribe(value -> System.out.println(value));</pre>
+  </div>
+
+  <!-- 5. EXECUTION MODEL -->
+  <div id="execution" class="reveal">
+    <div class="sec-head"><span class="num">05</span> Execution Model</div>
+
+    <div class="compare">
+      <div class="cbox bad">
+        <h4>🐢 Traditional Blocking</h4>
+        <ul>
+          <li>1 request = 1 thread</li>
+          <li>Thread blocks on DB/API call</li>
+          <li>100 requests = 100 threads</li>
+          <li>Memory heavy, limited scale</li>
+        </ul>
+      </div>
+      <div class="cbox good">
+        <h4>🚀 WebFlux Reactive</h4>
+        <ul>
+          <li>Few threads, many requests</li>
+          <li>Thread never blocks</li>
+          <li>2–4 threads can handle 1000+ requests</li>
+          <li>Memory efficient, highly scalable</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🔄 How a Request is Processed</h3>
+      <br>
+      <div class="lc">
+        <div class="lc-item"><strong>Step 1 — Request Arrives</strong><p>Handled by Netty event loop thread</p></div>
+        <div class="lc-item"><strong>Step 2 — Controller Returns Mono/Flux</strong><p>Does NOT send data yet — just a description</p></div>
+        <div class="lc-item"><strong>Step 3 — Non-blocking Call</strong><p>Thread sends request (DB/API), registers callback, moves on immediately</p></div>
+        <div class="lc-item"><strong>Step 4 — Thread is FREE</strong><p>Same thread picks up the next incoming request</p></div>
+        <div class="lc-item"><strong>Step 5 — Response Arrives</strong><p>Callback fires, thread processes and returns result</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. EVENT LOOP -->
+  <div id="eventloop" class="reveal">
+    <div class="sec-head"><span class="num">06</span> Event Loop Model</div>
+
+    <div class="analogy">
+      <div class="emoji">👨‍🍳</div>
+      <p>
+        <strong>Blocking (Old way)</strong> — One chef per customer. Chef stands idle while the oven heats up.<br><br>
+        <strong>Event Loop (WebFlux)</strong> — One waiter takes 50 orders, sends all to kitchen, keeps taking new orders, delivers each one when it's ready. <strong>Nobody waits idle.</strong>
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>⚙️ Event Loop Internals</h3>
+      <br>
+      <ol style="color:var(--muted);font-size:.88rem;padding-left:18px">
+        <li style="padding:4px 0">Request arrives → assigned to event loop thread</li>
+        <li style="padding:4px 0">Thread starts task</li>
+        <li style="padding:4px 0">If I/O needed → register callback → <strong style="color:var(--cyan)">MOVE ON</strong></li>
+        <li style="padding:4px 0">Thread handles next requests freely</li>
+        <li style="padding:4px 0">When I/O completes → callback executes the result</li>
+      </ol>
+    </div>
+
+    <div class="tip info">✅ <span>Threads are NOT tied to requests. They are continuously reused. 2–4 event loop threads can handle <strong>1000+ concurrent requests</strong>.</span></div>
+  </div>
+
+  <!-- 7. REQUEST FLOW -->
+  <div id="requestflow" class="reveal">
+    <div class="sec-head"><span class="num">07</span> Internal Request Flow</div>
+
+    <div class="flow">
+      <div class="fstep">Client</div><div class="farrow">→</div>
+      <div class="fstep">DispatcherHandler</div><div class="farrow">→</div>
+      <div class="fstep">HandlerMapping</div><div class="farrow">→</div>
+      <div class="fstep">HandlerAdapter</div><div class="farrow">→</div>
+      <div class="fstep">Controller</div><div class="farrow">→</div>
+      <div class="fstep">Response</div>
+    </div>
+
+    <div class="grid3">
+      <div class="op">
+        <code>DispatcherHandler</code>
+        <p>Central entry point (replaces DispatcherServlet). Acts as a traffic controller.</p>
+      </div>
+      <div class="op">
+        <code>HandlerMapping</code>
+        <p>Maps incoming request URL → correct controller method.</p>
+      </div>
+      <div class="op">
+        <code>HandlerAdapter</code>
+        <p>Invokes the handler method, handles Mono/Flux return types.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. OPERATORS -->
+  <div id="operators" class="reveal">
+    <div class="sec-head"><span class="num">08</span> Key Operators</div>
+
+    <div class="op-grid">
+      <div class="op">
+        <code>map()</code>
+        <p>Transform each element synchronously. Returns a normal value.</p>
+      </div>
+      <div class="op">
+        <code>flatMap()</code>
+        <p>Transform each element asynchronously. Returns Mono/Flux.</p>
+      </div>
+      <div class="op">
+        <code>filter()</code>
+        <p>Remove elements that don't match a condition.</p>
+      </div>
+      <div class="op">
+        <code>flatMapMany()</code>
+        <p>Convert Mono → Flux. Expand one item to many.</p>
+      </div>
+      <div class="op">
+        <code>switchIfEmpty()</code>
+        <p>If stream is empty, switch to a fallback publisher.</p>
+      </div>
+      <div class="op">
+        <code>zip()</code>
+        <p>Combine multiple publishers — emits only when ALL emit.</p>
+      </div>
+      <div class="op">
+        <code>merge()</code>
+        <p>Merge publishers in parallel (order not guaranteed).</p>
+      </div>
+      <div class="op">
+        <code>concat()</code>
+        <p>Run publishers sequentially one after another.</p>
+      </div>
+      <div class="op">
+        <code>collectList()</code>
+        <p>Collect all Flux items into Mono&lt;List&gt;.</p>
+      </div>
+      <div class="op">
+        <code>delayElements()</code>
+        <p>Add a delay between each emitted element.</p>
+      </div>
+      <div class="op">
+        <code>take(n) / skip(n)</code>
+        <p>Take first N items or skip first N items.</p>
+      </div>
+      <div class="op">
+        <code>buffer() / window()</code>
+        <p>buffer() → groups into List. window() → groups into Flux.</p>
+      </div>
+      <div class="op">
+        <code>then() / thenReturn()</code>
+        <p>then() ignores result, waits for completion. thenReturn() emits a new value.</p>
+      </div>
+      <div class="op">
+        <code>cache()</code>
+        <p>Store result and reuse it for future subscribers (performance).</p>
+      </div>
+      <div class="op">
+        <code>share()</code>
+        <p>Convert Cold Publisher → Hot Publisher.</p>
+      </div>
+      <div class="op">
+        <code>reduce()</code>
+        <p>Aggregate all items into a single value.</p>
+      </div>
+      <div class="op">
+        <code>timeout()</code>
+        <p>Fail fast if no item arrives within a time limit.</p>
+      </div>
+      <div class="op">
+        <code>doOnNext()</code>
+        <p>Side-effect: log/debug each element without changing the stream.</p>
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Operator</th><th>Returns</th><th>Use Case</th></tr>
+        <tr><td><span class="tag tc">map()</span></td><td>Normal value</td><td>Simple synchronous transformation</td></tr>
+        <tr><td><span class="tag ta">flatMap()</span></td><td>Mono / Flux</td><td>Async calls (DB, API)</td></tr>
+        <tr><td><span class="tag tp">flatMapMany()</span></td><td>Flux</td><td>Mono → Flux expansion</td></tr>
+        <tr><td><span class="tag tg">collectList()</span></td><td>Mono&lt;List&gt;</td><td>Collect all to list</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 9. ERROR HANDLING -->
+  <div id="errorhandling" class="reveal">
+    <div class="sec-head"><span class="num">09</span> Error Handling</div>
+
+    <div class="tip note">💡 <span>In reactive programming, <strong>errors are part of the stream</strong>. Instead of try-catch blocks, we use operators on the pipeline.</span></div>
+
+    <div class="grid2">
+      <div class="op">
+        <code>onErrorReturn</code>
+        <p>Return a <strong>default fallback value</strong> when error occurs. Simple and direct.</p>
+      </div>
+      <div class="op">
+        <code>onErrorResume</code>
+        <p>Switch to a <strong>fallback publisher</strong> (another DB/API call). Intelligent recovery.</p>
+      </div>
+      <div class="op">
+        <code>doOnError</code>
+        <p><strong>Log or monitor</strong> errors without recovering from them.</p>
+      </div>
+      <div class="op">
+        <code>retry(n)</code>
+        <p><strong>Retry the stream</strong> N times if error is temporary (network flakiness).</p>
+      </div>
+    </div>
+
+    <pre><span class="cm">// onErrorReturn – simple fallback value</span>
+<span class="cls">Mono</span>&lt;<span class="cls">String</span>&gt; result = callExternalApi()
+    .onErrorReturn(<span class="str">"Default Data"</span>);
+
+<span class="cm">// onErrorResume – fallback API call</span>
+<span class="cls">Mono</span>&lt;<span class="cls">String</span>&gt; result = callExternalApi()
+    .onErrorResume(ex -> callBackupApi());
+
+<span class="cm">// doOnError – just log it</span>
+<span class="cls">Mono</span>&lt;<span class="cls">String</span>&gt; result = callExternalApi()
+    .doOnError(ex -> log.error(<span class="str">"Error: {}"</span>, ex.getMessage()));
+
+<span class="cm">// retry – try again 3 times</span>
+<span class="cls">Mono</span>&lt;<span class="cls">String</span>&gt; result = callExternalApi()
+    .retry(<span class="kw">3</span>);</pre>
+  </div>
+
+  <!-- 10. SCHEDULERS -->
+  <div id="schedulers" class="reveal">
+    <div class="sec-head"><span class="num">10</span> Schedulers &amp; Thread Switching</div>
+
+    <div class="tip warn">⚠️ <span>Never run blocking code (JDBC, File I/O) on the event loop thread — it will <strong>block all other requests!</strong></span></div>
+
+    <div class="grid3">
+      <div class="hcard cyan">
+        <h4>⚡ Schedulers.parallel()</h4>
+        <ul>
+          <li>CPU-intensive tasks</li>
+          <li>Calculations</li>
+          <li>Data transformations</li>
+        </ul>
+      </div>
+      <div class="hcard amber">
+        <h4>🧱 Schedulers.boundedElastic()</h4>
+        <ul>
+          <li>Blocking operations</li>
+          <li>JDBC / File I/O</li>
+          <li>Legacy APIs</li>
+        </ul>
+      </div>
+      <div class="hcard purple">
+        <h4>🔁 Schedulers.single()</h4>
+        <ul>
+          <li>Single reusable thread</li>
+          <li>Sequential tasks</li>
+          <li>Time-sensitive work</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Operator</th><th>Effect</th></tr>
+        <tr><td><span class="tag tc">subscribeOn()</span></td><td>Controls where the <strong>entire pipeline starts</strong> (from beginning)</td></tr>
+        <tr><td><span class="tag tp">publishOn()</span></td><td>Switches thread <strong>mid-pipeline</strong> from that point onward</td></tr>
+      </table>
+    </div>
+
+    <pre><span class="cls">Flux</span>.fromIterable(items)
+    .subscribeOn(<span class="cls">Schedulers</span>.boundedElastic())   <span class="cm">// start on blocking thread</span>
+    .map(item -> process(item))
+    .publishOn(<span class="cls">Schedulers</span>.parallel())            <span class="cm">// switch to CPU thread</span>
+    .map(item -> transform(item))
+    .subscribe();</pre>
+  </div>
+
+  <!-- 11. HOT VS COLD -->
+  <div id="hotcold" class="reveal">
+    <div class="sec-head"><span class="num">11</span> Hot vs Cold Publishers</div>
+
+    <div class="compare">
+      <div class="cbox bad" style="border-top-color:var(--cyan)">
+        <h4>🧊 Cold Publisher</h4>
+        <ul>
+          <li>Starts only when subscribed</li>
+          <li>Each subscriber gets fresh data</li>
+          <li>DB calls, API calls, file reads</li>
+        </ul>
+      </div>
+      <div class="cbox good" style="border-top-color:var(--amber)">
+        <h4>🔥 Hot Publisher</h4>
+        <ul>
+          <li>Emits even without subscribers</li>
+          <li>Late subscribers miss past data</li>
+          <li>Live feeds, event streams</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="compare">
+      <div class="analogy" style="margin-bottom:0">
+        <div class="emoji">📺</div>
+        <p><strong>Cold</strong> — YouTube video. Every viewer starts from the beginning. Each gets their own fresh stream.</p>
+      </div>
+      <div class="analogy" style="margin-bottom:0">
+        <div class="emoji">🏏</div>
+        <p><strong>Hot</strong> — Live cricket match. You join late, you <em>miss the early overs</em>. Data is live and shared.</p>
+      </div>
+    </div>
+
+    <br>
+
+    <pre><span class="cm">// Cold → default Flux/Mono</span>
+<span class="cls">Flux</span>&lt;<span class="cls">String</span>&gt; cold = <span class="cls">Flux</span>.just(<span class="str">"a"</span>, <span class="str">"b"</span>, <span class="str">"c"</span>);
+
+<span class="cm">// Hot → convert using share()</span>
+<span class="cls">Flux</span>&lt;<span class="cls">String</span>&gt; hot = cold.share();
+
+<span class="cm">// Cache → store result for future subscribers</span>
+<span class="cls">Flux</span>&lt;<span class="cls">String</span>&gt; cached = cold.cache();</pre>
+  </div>
+
+  <!-- 12. BACKPRESSURE -->
+  <div id="backpressure" class="reveal">
+    <div class="sec-head"><span class="num">12</span> Backpressure</div>
+
+    <div class="analogy">
+      <div class="emoji">🚰</div>
+      <p>
+        Imagine a fire hose filling a small cup. Without backpressure — the cup overflows.<br>
+        <strong>Backpressure = the cup telling the hose "slow down, I can only take 10 drops at a time."</strong>
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>📌 What is Backpressure?</h3>
+      <p>The mechanism that lets a <strong style="color:var(--cyan)">subscriber control how much data the publisher sends</strong>. Without it, a fast producer can overwhelm a slow consumer and cause memory issues.</p>
+    </div>
+
+    <div class="grid3">
+      <div class="op">
+        <code>onBackpressureBuffer()</code>
+        <p>Buffer excess items in memory until consumer is ready.</p>
+      </div>
+      <div class="op">
+        <code>onBackpressureDrop()</code>
+        <p>Drop items the consumer can't handle in time.</p>
+      </div>
+      <div class="op">
+        <code>onBackpressureLatest()</code>
+        <p>Keep only the latest item, discard older ones.</p>
+      </div>
+    </div>
+
+    <pre><span class="cls">Flux</span>.range(<span class="kw">1</span>, <span class="kw">1000</span>)
+    .onBackpressureBuffer(<span class="kw">50</span>)   <span class="cm">// buffer max 50 items</span>
+    .subscribe(item -> {
+        <span class="cm">// slow consumer</span>
+        Thread.sleep(<span class="kw">100</span>);
+        System.out.println(item);
+    });</pre>
+  </div>
+
+  <!-- 13. STREAMING -->
+  <div id="streaming" class="reveal">
+    <div class="sec-head"><span class="num">13</span> What is Streaming?</div>
+
+    <div class="compare">
+      <div class="analogy" style="margin-bottom:0">
+        <div class="emoji">📦</div>
+        <p><strong>Normal response</strong> — Waiter brings the <em>entire meal at once</em> when everything is ready. You wait longer.</p>
+      </div>
+      <div class="analogy" style="margin-bottom:0">
+        <div class="emoji">🍽️</div>
+        <p><strong>Streaming response</strong> — Each dish is brought <em>as soon as it's ready</em>. Starters first, then mains, then dessert.</p>
+      </div>
+    </div>
+
+    <br>
+    <div class="card">
+      <h3>📡 Use Cases for Streaming</h3>
+      <div class="pill-grid" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
+        <span class="tag tc">Live Stock Dashboard</span>
+        <span class="tag tp">WhatsApp messages</span>
+        <span class="tag tg">Log streaming</span>
+        <span class="tag ta">Large file download</span>
+        <span class="tag tr">Real-time notifications</span>
+        <span class="tag tc">Kafka consumers</span>
+      </div>
+    </div>
+
+    <pre><span class="cm">// Stream response with text/event-stream</span>
+<span class="kw">@GetMapping</span>(value = <span class="str">"/stream"</span>, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+<span class="kw">public</span> <span class="cls">Flux</span>&lt;<span class="cls">String</span>&gt; streamData() {
+    <span class="kw">return</span> <span class="cls">Flux</span>.interval(<span class="cls">Duration</span>.ofSeconds(<span class="kw">1</span>))
+               .map(i -> <span class="str">"Event #"</span> + i)
+               .take(<span class="kw">10</span>);
+}</pre>
+  </div>
+
+  <!-- 14. WHEN TO USE -->
+  <div id="whentouse" class="reveal">
+    <div class="sec-head"><span class="num">14</span> When to Use WebFlux</div>
+
+    <div class="grid2">
+      <div class="hcard green">
+        <h4>✅ Perfect For</h4>
+        <ul>
+          <li>Chat / notification apps</li>
+          <li>Live dashboards</li>
+          <li>Streaming APIs</li>
+          <li>Microservices with many calls</li>
+          <li>Event-driven systems (Kafka)</li>
+          <li>High concurrency apps</li>
+        </ul>
+      </div>
+      <div class="hcard red">
+        <h4>❌ Avoid When</h4>
+        <ul>
+          <li>Simple CRUD apps</li>
+          <li>Only blocking DBs available</li>
+          <li>Small team, no reactive knowledge</li>
+          <li>Low traffic applications</li>
+          <li>Simple batch processing</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Operator</th><th>Why It Matters</th></tr>
+        <tr><td><span class="tag tc">doOnNext</span></td><td>Debugging and logging in the stream</td></tr>
+        <tr><td><span class="tag tg">defaultIfEmpty</span></td><td>Simple fallback for empty streams</td></tr>
+        <tr><td><span class="tag tp">flatMapMany</span></td><td>Expand Mono → Flux</td></tr>
+        <tr><td><span class="tag ta">cache()</span></td><td>Avoid repeated expensive calls</td></tr>
+        <tr><td><span class="tag tc">share()</span></td><td>Convert to Hot for shared streams</td></tr>
+        <tr><td><span class="tag tr">block()</span></td><td>⛔ Avoid in WebFlux — defeats the purpose</td></tr>
+        <tr><td><span class="tag tg">buffer()</span></td><td>Batch processing</td></tr>
+        <tr><td><span class="tag tp">timeout()</span></td><td>Fail fast on slow services</td></tr>
+      </table>
+    </div>
+
+    <div class="tip info">🎉 <span>You've covered all the core WebFlux concepts! Now dive into the advanced topics below to reach 100%.</span></div>
+  </div>
+
+  <!-- 15. WEBCLIENT DEEP DIVE -->
+  <div id="webclient" class="reveal">
+    <div class="sec-head"><span class="num">15</span> WebClient Deep Dive</div>
+
+    <div class="analogy">
+      <div class="emoji">🌐</div>
+      <p><strong>WebClient</strong> is the reactive replacement for RestTemplate. It is <strong>non-blocking</strong>, supports streaming, and can chain multiple calls together without blocking any thread.</p>
+    </div>
+
+    <div class="card">
+      <h3>⚙️ Setup WebClient</h3>
+      <pre><span class="cm">// Basic setup</span>
+<span class="cls">WebClient</span> client = <span class="cls">WebClient</span>.create(<span class="str">"https://api.example.com"</span>);
+
+<span class="cm">// With custom config (timeout, headers)</span>
+<span class="cls">WebClient</span> client = <span class="cls">WebClient</span>.builder()
+    .baseUrl(<span class="str">"https://api.example.com"</span>)
+    .defaultHeader(<span class="str">"Authorization"</span>, <span class="str">"Bearer token"</span>)
+    .build();</pre>
+    </div>
+
+    <div class="grid2">
+      <div class="op">
+        <code>GET Request</code>
+        <pre style="margin:8px 0 0"><span class="cls">Mono</span>&lt;<span class="cls">User</span>&gt; user = client.get()
+    .uri(<span class="str">"/users/{id}"</span>, <span class="kw">1</span>)
+    .retrieve()
+    .bodyToMono(<span class="cls">User</span>.class);</pre>
+      </div>
+      <div class="op">
+        <code>POST Request</code>
+        <pre style="margin:8px 0 0"><span class="cls">Mono</span>&lt;<span class="cls">User</span>&gt; saved = client.post()
+    .uri(<span class="str">"/users"</span>)
+    .bodyValue(newUser)
+    .retrieve()
+    .bodyToMono(<span class="cls">User</span>.class);</pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🔗 Chaining Multiple Calls</h3>
+      <pre><span class="cm">// Get user, then get their orders — both non-blocking</span>
+<span class="cls">Mono</span>&lt;<span class="cls">Orders</span>&gt; result = client.get()
+    .uri(<span class="str">"/users/1"</span>)
+    .retrieve()
+    .bodyToMono(<span class="cls">User</span>.class)
+    .flatMap(user -> client.get()
+        .uri(<span class="str">"/orders?userId="</span> + user.getId())
+        .retrieve()
+        .bodyToMono(<span class="cls">Orders</span>.class));</pre>
+    </div>
+
+    <div class="card">
+      <h3>⚠️ Error Handling in WebClient</h3>
+      <pre><span class="cls">Mono</span>&lt;<span class="cls">User</span>&gt; user = client.get()
+    .uri(<span class="str">"/users/99"</span>)
+    .retrieve()
+    .onStatus(<span class="cls">HttpStatus</span>::is4xxClientError,
+        response -> <span class="cls">Mono</span>.error(<span class="kw">new</span> <span class="cls">RuntimeException</span>(<span class="str">"User not found"</span>)))
+    .onStatus(<span class="cls">HttpStatus</span>::is5xxServerError,
+        response -> <span class="cls">Mono</span>.error(<span class="kw">new</span> <span class="cls">RuntimeException</span>(<span class="str">"Server error"</span>)))
+    .bodyToMono(<span class="cls">User</span>.class);</pre>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Method</th><th>Purpose</th></tr>
+        <tr><td><span class="tag tc">retrieve()</span></td><td>Simple — just get the response body</td></tr>
+        <tr><td><span class="tag tp">exchangeToMono()</span></td><td>Advanced — access full response (status, headers)</td></tr>
+        <tr><td><span class="tag tg">bodyToMono()</span></td><td>Convert response → single object</td></tr>
+        <tr><td><span class="tag ta">bodyToFlux()</span></td><td>Convert response → stream of objects</td></tr>
+        <tr><td><span class="tag tr">onStatus()</span></td><td>Handle specific HTTP status codes</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 16. FUNCTIONAL ROUTING -->
+  <div id="functionalrouting" class="reveal">
+    <div class="sec-head"><span class="num">16</span> Functional Routing</div>
+
+    <div class="tip note">💡 <span>WebFlux has <strong>two programming styles</strong>. You know the annotation style (<code>@RestController</code>). Functional routing is the second style — more explicit and flexible.</span></div>
+
+    <div class="compare">
+      <div class="cbox bad" style="border-top-color:var(--purple)">
+        <h4>📝 Annotation Style (you know this)</h4>
+        <ul>
+          <li>@RestController</li>
+          <li>@GetMapping, @PostMapping</li>
+          <li>Familiar from Spring MVC</li>
+          <li>Less flexible</li>
+        </ul>
+      </div>
+      <div class="cbox good" style="border-top-color:var(--cyan)">
+        <h4>⚙️ Functional Style (new)</h4>
+        <ul>
+          <li>RouterFunction</li>
+          <li>HandlerFunction</li>
+          <li>More explicit routing</li>
+          <li>Better for complex routing logic</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🔧 Step 1 — Create a Handler</h3>
+      <pre><span class="kw">@Component</span>
+<span class="kw">public class</span> <span class="cls">UserHandler</span> {
+
+    <span class="kw">public</span> <span class="cls">Mono</span>&lt;<span class="cls">ServerResponse</span>&gt; getUser(<span class="cls">ServerRequest</span> request) {
+        <span class="cls">String</span> id = request.pathVariable(<span class="str">"id"</span>);
+        <span class="cls">Mono</span>&lt;<span class="cls">User</span>&gt; user = userService.findById(id);
+        <span class="kw">return</span> <span class="cls">ServerResponse</span>.ok()
+            .contentType(<span class="cls">MediaType</span>.APPLICATION_JSON)
+            .body(user, <span class="cls">User</span>.class);
+    }
+
+    <span class="kw">public</span> <span class="cls">Mono</span>&lt;<span class="cls">ServerResponse</span>&gt; getAllUsers(<span class="cls">ServerRequest</span> request) {
+        <span class="cls">Flux</span>&lt;<span class="cls">User</span>&gt; users = userService.findAll();
+        <span class="kw">return</span> <span class="cls">ServerResponse</span>.ok().body(users, <span class="cls">User</span>.class);
+    }
+}</pre>
+    </div>
+
+    <div class="card">
+      <h3>🛣️ Step 2 — Create a Router</h3>
+      <pre><span class="kw">@Configuration</span>
+<span class="kw">public class</span> <span class="cls">UserRouter</span> {
+
+    <span class="kw">@Bean</span>
+    <span class="kw">public</span> <span class="cls">RouterFunction</span>&lt;<span class="cls">ServerResponse</span>&gt; routes(<span class="cls">UserHandler</span> handler) {
+        <span class="kw">return</span> <span class="cls">RouterFunctions</span>
+            .route(<span class="cls">GET</span>(<span class="str">"/users/{id}"</span>), handler::getUser)
+            .andRoute(<span class="cls">GET</span>(<span class="str">"/users"</span>),     handler::getAllUsers);
+    }
+}</pre>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Concept</th><th>Role</th></tr>
+        <tr><td><span class="tag tc">RouterFunction</span></td><td>Defines URL routes — like @GetMapping but in code</td></tr>
+        <tr><td><span class="tag tp">HandlerFunction</span></td><td>Handles the request — like a controller method</td></tr>
+        <tr><td><span class="tag tg">ServerRequest</span></td><td>Wrapper around HTTP request (path vars, body, headers)</td></tr>
+        <tr><td><span class="tag ta">ServerResponse</span></td><td>Builds the HTTP response (status, body, headers)</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 17. R2DBC -->
+  <div id="r2dbc" class="reveal">
+    <div class="sec-head"><span class="num">17</span> R2DBC — Reactive Database</div>
+
+    <div class="analogy">
+      <div class="emoji">🗄️</div>
+      <p>
+        <strong>JDBC</strong> — Blocking. Thread waits while DB executes the query. Kills WebFlux performance.<br><br>
+        <strong>R2DBC</strong> — Non-blocking. Thread moves on, callback fires when DB result is ready. <strong>True reactive database access.</strong>
+      </p>
+    </div>
+
+    <div class="compare">
+      <div class="cbox bad">
+        <h4>❌ JDBC (Blocking)</h4>
+        <ul>
+          <li>Thread waits for DB result</li>
+          <li>Blocks event loop</li>
+          <li>JPA / Hibernate</li>
+          <li>Not reactive</li>
+        </ul>
+      </div>
+      <div class="cbox good">
+        <h4>✅ R2DBC (Reactive)</h4>
+        <ul>
+          <li>Non-blocking DB driver</li>
+          <li>Returns Mono / Flux</li>
+          <li>Works with PostgreSQL, MySQL, H2</li>
+          <li>Spring Data R2DBC</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📦 Dependencies (pom.xml)</h3>
+      <pre><span class="cm">&lt;!-- WebFlux --&gt;</span>
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;<span class="str">spring-boot-starter-webflux</span>&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+<span class="cm">&lt;!-- R2DBC for PostgreSQL --&gt;</span>
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;<span class="str">spring-boot-starter-data-r2dbc</span>&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.r2dbc&lt;/groupId&gt;
+    &lt;artifactId&gt;<span class="str">r2dbc-postgresql</span>&lt;/artifactId&gt;
+&lt;/dependency&gt;</pre>
+    </div>
+
+    <div class="card">
+      <h3>🏗️ Entity + Repository</h3>
+      <pre><span class="cm">// Entity</span>
+<span class="kw">@Table</span>(<span class="str">"users"</span>)
+<span class="kw">public class</span> <span class="cls">User</span> {
+    <span class="kw">@Id</span>
+    <span class="kw">private</span> <span class="cls">Long</span> id;
+    <span class="kw">private</span> <span class="cls">String</span> name;
+    <span class="kw">private</span> <span class="cls">String</span> email;
+}
+
+<span class="cm">// Reactive Repository — returns Mono/Flux automatically</span>
+<span class="kw">public interface</span> <span class="cls">UserRepository</span> <span class="kw">extends</span> <span class="cls">ReactiveCrudRepository</span>&lt;<span class="cls">User</span>, <span class="cls">Long</span>&gt; {
+    <span class="cls">Flux</span>&lt;<span class="cls">User</span>&gt; findByName(<span class="cls">String</span> name);
+    <span class="cls">Mono</span>&lt;<span class="cls">User</span>&gt; findByEmail(<span class="cls">String</span> email);
+}</pre>
+    </div>
+
+    <div class="card">
+      <h3>⚙️ application.properties</h3>
+      <pre>spring.r2dbc.url=r2dbc:postgresql://localhost:5432/mydb
+spring.r2dbc.username=postgres
+spring.r2dbc.password=secret</pre>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>JDBC</th><th>R2DBC Equivalent</th></tr>
+        <tr><td>JpaRepository</td><td>ReactiveCrudRepository</td></tr>
+        <tr><td>findById() → User</td><td>findById() → Mono&lt;User&gt;</td></tr>
+        <tr><td>findAll() → List&lt;User&gt;</td><td>findAll() → Flux&lt;User&gt;</td></tr>
+        <tr><td>save() → User</td><td>save() → Mono&lt;User&gt;</td></tr>
+        <tr><td>deleteById() → void</td><td>deleteById() → Mono&lt;Void&gt;</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 18. STEP VERIFIER -->
+  <div id="stepverifier" class="reveal">
+    <div class="sec-head"><span class="num">18</span> Testing with StepVerifier</div>
+
+    <div class="analogy">
+      <div class="emoji">🧪</div>
+      <p>
+        Normal <code>assertEquals()</code> doesn't work for async streams.<br>
+        <strong>StepVerifier</strong> is the tool that lets you <strong>subscribe to a Mono/Flux and assert what it emits, step by step.</strong>
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>✅ Basic StepVerifier</h3>
+      <pre><span class="cm">// Test a Mono</span>
+<span class="cls">Mono</span>&lt;<span class="cls">String</span>&gt; mono = <span class="cls">Mono</span>.just(<span class="str">"Hello"</span>);
+
+<span class="cls">StepVerifier</span>.create(mono)
+    .expectNext(<span class="str">"Hello"</span>)   <span class="cm">// assert value emitted</span>
+    .expectComplete()        <span class="cm">// assert stream completed</span>
+    .verify();               <span class="cm">// run it!</span></pre>
+    </div>
+
+    <div class="card">
+      <h3>🔢 Testing Flux</h3>
+      <pre><span class="cls">Flux</span>&lt;<span class="cls">Integer</span>&gt; flux = <span class="cls">Flux</span>.just(<span class="kw">1</span>, <span class="kw">2</span>, <span class="kw">3</span>);
+
+<span class="cls">StepVerifier</span>.create(flux)
+    .expectNext(<span class="kw">1</span>)
+    .expectNext(<span class="kw">2</span>)
+    .expectNext(<span class="kw">3</span>)
+    .expectComplete()
+    .verify();</pre>
+    </div>
+
+    <div class="card">
+      <h3>💥 Testing Errors</h3>
+      <pre><span class="cls">Mono</span>&lt;<span class="cls">String</span>&gt; error = <span class="cls">Mono</span>.error(<span class="kw">new</span> <span class="cls">RuntimeException</span>(<span class="str">"Oops!"</span>));
+
+<span class="cls">StepVerifier</span>.create(error)
+    .expectErrorMessage(<span class="str">"Oops!"</span>)   <span class="cm">// assert error message</span>
+    .verify();</pre>
+    </div>
+
+    <div class="card">
+      <h3>⏱️ Testing with Time (Virtual Time)</h3>
+      <pre><span class="cm">// Without virtual time → test would take 10 real seconds!</span>
+<span class="cls">Flux</span>&lt;<span class="cls">Long</span>&gt; flux = <span class="cls">Flux</span>.interval(<span class="cls">Duration</span>.ofSeconds(<span class="kw">1</span>)).take(<span class="kw">3</span>);
+
+<span class="cm">// With virtual time → runs instantly</span>
+<span class="cls">StepVerifier</span>.withVirtualTime(() -> flux)
+    .thenAwait(<span class="cls">Duration</span>.ofSeconds(<span class="kw">3</span>))
+    .expectNextCount(<span class="kw">3</span>)
+    .expectComplete()
+    .verify();</pre>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Method</th><th>What it checks</th></tr>
+        <tr><td><span class="tag tc">expectNext(val)</span></td><td>Next emitted value equals val</td></tr>
+        <tr><td><span class="tag tg">expectNextCount(n)</span></td><td>Exactly n items emitted</td></tr>
+        <tr><td><span class="tag tp">expectComplete()</span></td><td>Stream completed normally</td></tr>
+        <tr><td><span class="tag tr">expectError()</span></td><td>Stream ended with error</td></tr>
+        <tr><td><span class="tag ta">expectErrorMessage()</span></td><td>Error has specific message</td></tr>
+        <tr><td><span class="tag tc">thenAwait(duration)</span></td><td>Advance virtual time</td></tr>
+        <tr><td><span class="tag tg">verify()</span></td><td>Trigger the test — always call this!</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 19. WEBSOCKET -->
+  <div id="websocket" class="reveal">
+    <div class="sec-head"><span class="num">19</span> WebSocket with WebFlux</div>
+
+    <div class="analogy">
+      <div class="emoji">📡</div>
+      <p>
+        <strong>HTTP</strong> — Client asks, server answers, connection closes. One-way per request.<br><br>
+        <strong>WebSocket</strong> — Client and server open a <strong>persistent two-way connection</strong>. Both can send messages any time. Perfect for chat, live scores, notifications.
+      </p>
+    </div>
+
+    <div class="compare">
+      <div class="cbox bad" style="border-top-color:var(--amber)">
+        <h4>🌐 HTTP (Request-Response)</h4>
+        <ul>
+          <li>Client requests → Server responds</li>
+          <li>Connection closes after each request</li>
+          <li>Polling needed for live data</li>
+          <li>High overhead for real-time</li>
+        </ul>
+      </div>
+      <div class="cbox good">
+        <h4>📡 WebSocket (Persistent)</h4>
+        <ul>
+          <li>One connection stays open</li>
+          <li>Both sides push messages freely</li>
+          <li>Low latency, low overhead</li>
+          <li>Great for chat, live feeds</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🔧 WebSocket Handler (Server Side)</h3>
+      <pre><span class="kw">@Component</span>
+<span class="kw">public class</span> <span class="cls">ChatWebSocketHandler</span> <span class="kw">implements</span> <span class="cls">WebSocketHandler</span> {
+
+    <span class="kw">@Override</span>
+    <span class="kw">public</span> <span class="cls">Mono</span>&lt;<span class="cls">Void</span>&gt; handle(<span class="cls">WebSocketSession</span> session) {
+
+        <span class="cm">// Read messages from client, echo them back</span>
+        <span class="cls">Flux</span>&lt;<span class="cls">WebSocketMessage</span>&gt; response = session.receive()
+            .map(msg -> msg.getPayloadAsText())
+            .map(text -> <span class="str">"Echo: "</span> + text)
+            .map(session::textMessage);
+
+        <span class="kw">return</span> session.send(response);
+    }
+}</pre>
+    </div>
+
+    <div class="card">
+      <h3>🛣️ Register WebSocket Route</h3>
+      <pre><span class="kw">@Configuration</span>
+<span class="kw">public class</span> <span class="cls">WebSocketConfig</span> {
+
+    <span class="kw">@Bean</span>
+    <span class="kw">public</span> <span class="cls">HandlerMapping</span> webSocketMapping(<span class="cls">ChatWebSocketHandler</span> handler) {
+        <span class="cls">Map</span>&lt;<span class="cls">String</span>, <span class="cls">WebSocketHandler</span>&gt; map = <span class="kw">new</span> <span class="cls">HashMap</span>&lt;&gt;();
+        map.put(<span class="str">"/chat"</span>, handler);   <span class="cm">// ws://localhost:8080/chat</span>
+
+        <span class="cls">SimpleUrlHandlerMapping</span> mapping = <span class="kw">new</span> <span class="cls">SimpleUrlHandlerMapping</span>();
+        mapping.setUrlMap(map);
+        mapping.setOrder(<span class="kw">-1</span>);
+        <span class="kw">return</span> mapping;
+    }
+}</pre>
+    </div>
+
+    <div class="tip info">✅ <span>WebSocket + WebFlux is the ideal combo for <strong>real-time chat, live notifications, and live dashboards</strong>. The entire pipeline stays non-blocking.</span></div>
+  </div>
+
+  <!-- 20. SPRING SECURITY + WEBFLUX -->
+  <div id="security" class="reveal">
+    <div class="sec-head"><span class="num">20</span> Spring Security with WebFlux</div>
+
+    <div class="tip note">💡 <span>Spring Security works <strong>differently in WebFlux</strong>. It uses reactive types — no ThreadLocal, uses <code>ReactiveSecurityContextHolder</code> instead.</span></div>
+
+    <div class="compare">
+      <div class="cbox bad" style="border-top-color:var(--amber)">
+        <h4>🔒 Spring MVC Security</h4>
+        <ul>
+          <li>SecurityContextHolder (ThreadLocal)</li>
+          <li>@EnableWebSecurity</li>
+          <li>Blocking filters</li>
+          <li>WebSecurityConfigurerAdapter</li>
+        </ul>
+      </div>
+      <div class="cbox good">
+        <h4>🔐 WebFlux Security</h4>
+        <ul>
+          <li>ReactiveSecurityContextHolder</li>
+          <li>@EnableWebFluxSecurity</li>
+          <li>Non-blocking filters</li>
+          <li>SecurityWebFilterChain</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>⚙️ Basic Security Config</h3>
+      <pre><span class="kw">@Configuration</span>
+<span class="kw">@EnableWebFluxSecurity</span>
+<span class="kw">public class</span> <span class="cls">SecurityConfig</span> {
+
+    <span class="kw">@Bean</span>
+    <span class="kw">public</span> <span class="cls">SecurityWebFilterChain</span> securityChain(<span class="cls">ServerHttpSecurity</span> http) {
+        <span class="kw">return</span> http
+            .authorizeExchange(exchanges -> exchanges
+                .pathMatchers(<span class="str">"/public/**"</span>).permitAll()
+                .anyExchange().authenticated())
+            .httpBasic(<span class="cls">Customizer</span>.withDefaults())
+            .build();
+    }
+
+    <span class="kw">@Bean</span>
+    <span class="kw">public</span> <span class="cls">ReactiveUserDetailsService</span> userDetailsService() {
+        <span class="cls">UserDetails</span> user = <span class="cls">User</span>.withDefaultPasswordEncoder()
+            .username(<span class="str">"admin"</span>).password(<span class="str">"pass"</span>).roles(<span class="str">"ADMIN"</span>).build();
+        <span class="kw">return new</span> <span class="cls">MapReactiveUserDetailsService</span>(user);
+    }
+}</pre>
+    </div>
+
+    <div class="card">
+      <h3>👤 Get Current User in Controller</h3>
+      <pre><span class="kw">@GetMapping</span>(<span class="str">"/me"</span>)
+<span class="kw">public</span> <span class="cls">Mono</span>&lt;<span class="cls">String</span>&gt; currentUser(<span class="cls">Authentication</span> auth) {
+    <span class="kw">return</span> <span class="cls">Mono</span>.just(<span class="str">"Hello, "</span> + auth.getName());
+}
+
+<span class="cm">// Or using ReactiveSecurityContextHolder</span>
+<span class="kw">public</span> <span class="cls">Mono</span>&lt;<span class="cls">String</span>&gt; getUser() {
+    <span class="kw">return</span> <span class="cls">ReactiveSecurityContextHolder</span>.getContext()
+        .map(ctx -> ctx.getAuthentication().getName());
+}</pre>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>MVC</th><th>WebFlux Equivalent</th></tr>
+        <tr><td>@EnableWebSecurity</td><td>@EnableWebFluxSecurity</td></tr>
+        <tr><td>SecurityContextHolder</td><td>ReactiveSecurityContextHolder</td></tr>
+        <tr><td>UserDetailsService</td><td>ReactiveUserDetailsService</td></tr>
+        <tr><td>WebSecurityConfigurerAdapter</td><td>SecurityWebFilterChain @Bean</td></tr>
+        <tr><td>HttpSecurity</td><td>ServerHttpSecurity</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 21. CONTEXT PROPAGATION -->
+  <div id="context" class="reveal">
+    <div class="sec-head"><span class="num">21</span> Context Propagation</div>
+
+    <div class="analogy">
+      <div class="emoji">🎒</div>
+      <p>
+        In regular Java, you use <code>ThreadLocal</code> to carry data (like user ID, trace ID) through a request on the same thread.<br><br>
+        In WebFlux, threads switch constantly — so <strong>ThreadLocal doesn't work</strong>. Instead, Reactor provides <code>Context</code> — a <strong>key-value bag attached to the reactive pipeline</strong>.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>📥 Write to Context</h3>
+      <pre><span class="cls">Mono</span>&lt;<span class="cls">String</span>&gt; result = <span class="cls">Mono</span>.just(<span class="str">"Hello"</span>)
+    .contextWrite(<span class="cls">Context</span>.of(<span class="str">"userId"</span>, <span class="str">"user-123"</span>,
+                              <span class="str">"traceId"</span>, <span class="str">"abc-xyz"</span>));</pre>
+    </div>
+
+    <div class="card">
+      <h3>📤 Read from Context</h3>
+      <pre><span class="cls">Mono</span>&lt;<span class="cls">String</span>&gt; result = <span class="cls">Mono</span>.deferContextual(ctx -> {
+    <span class="cls">String</span> userId = ctx.get(<span class="str">"userId"</span>);
+    <span class="kw">return</span> <span class="cls">Mono</span>.just(<span class="str">"Processing for: "</span> + userId);
+}).contextWrite(<span class="cls">Context</span>.of(<span class="str">"userId"</span>, <span class="str">"user-123"</span>));</pre>
+    </div>
+
+    <div class="tip warn">⚠️ <span>Context flows <strong>upstream</strong> (from subscribe to source), not downstream. Always call <code>contextWrite()</code> <strong>after</strong> the operator that reads it.</span></div>
+
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Concept</th><th>ThreadLocal vs Context</th></tr>
+        <tr><td>Storage</td><td>ThreadLocal → per thread | Context → per subscription</td></tr>
+        <tr><td>Thread-safe</td><td>ThreadLocal breaks on thread switch | Context is immutable &amp; safe</td></tr>
+        <tr><td>Use case</td><td>Carry userId, traceId, auth token through the reactive pipeline</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 22. FULL CRUD API -->
+  <div id="fullapi" class="reveal">
+    <div class="sec-head"><span class="num">22</span> Full Reactive CRUD API</div>
+
+    <div class="tip info">✅ <span>This ties everything together — WebFlux controller + R2DBC repository + Mono/Flux in a real working API.</span></div>
+
+    <div class="card">
+      <h3>📁 Project Structure</h3>
+      <pre>src/
+ └── main/java/com/example/
+      ├── <span class="cls">User</span>.java              <span class="cm">← Entity</span>
+      ├── <span class="cls">UserRepository</span>.java    <span class="cm">← ReactiveCrudRepository</span>
+      ├── <span class="cls">UserService</span>.java       <span class="cm">← Business logic</span>
+      └── <span class="cls">UserController</span>.java    <span class="cm">← REST endpoints</span></pre>
+    </div>
+
+    <div class="card">
+      <h3>🏗️ Entity</h3>
+      <pre><span class="kw">@Table</span>(<span class="str">"users"</span>)
+<span class="kw">public class</span> <span class="cls">User</span> {
+    <span class="kw">@Id</span> <span class="kw">private</span> <span class="cls">Long</span> id;
+    <span class="kw">private</span> <span class="cls">String</span> name;
+    <span class="kw">private</span> <span class="cls">String</span> email;
+    <span class="cm">// getters, setters, constructors</span>
+}</pre>
+    </div>
+
+    <div class="card">
+      <h3>🗃️ Repository</h3>
+      <pre><span class="kw">public interface</span> <span class="cls">UserRepository</span> <span class="kw">extends</span> <span class="cls">ReactiveCrudRepository</span>&lt;<span class="cls">User</span>, <span class="cls">Long</span>&gt; {
+    <span class="cls">Flux</span>&lt;<span class="cls">User</span>&gt; findByName(<span class="cls">String</span> name);
+}</pre>
+    </div>
+
+    <div class="card">
+      <h3>⚙️ Service</h3>
+      <pre><span class="kw">@Service</span>
+<span class="kw">public class</span> <span class="cls">UserService</span> {
+
+    <span class="kw">private final</span> <span class="cls">UserRepository</span> repo;
+
+    <span class="kw">public</span> <span class="cls">Flux</span>&lt;<span class="cls">User</span>&gt; getAllUsers()          { <span class="kw">return</span> repo.findAll(); }
+    <span class="kw">public</span> <span class="cls">Mono</span>&lt;<span class="cls">User</span>&gt; getUserById(<span class="cls">Long</span> id)  { <span class="kw">return</span> repo.findById(id); }
+    <span class="kw">public</span> <span class="cls">Mono</span>&lt;<span class="cls">User</span>&gt; createUser(<span class="cls">User</span> user)  { <span class="kw">return</span> repo.save(user); }
+    <span class="kw">public</span> <span class="cls">Mono</span>&lt;<span class="cls">Void</span>&gt; deleteUser(<span class="cls">Long</span> id)   { <span class="kw">return</span> repo.deleteById(id); }
+
+    <span class="kw">public</span> <span class="cls">Mono</span>&lt;<span class="cls">User</span>&gt; updateUser(<span class="cls">Long</span> id, <span class="cls">User</span> updated) {
+        <span class="kw">return</span> repo.findById(id)
+            .flatMap(existing -> {
+                existing.setName(updated.getName());
+                existing.setEmail(updated.getEmail());
+                <span class="kw">return</span> repo.save(existing);
+            });
+    }
+}</pre>
+    </div>
+
+    <div class="card">
+      <h3>🌐 Controller</h3>
+      <pre><span class="kw">@RestController</span>
+<span class="kw">@RequestMapping</span>(<span class="str">"/users"</span>)
+<span class="kw">public class</span> <span class="cls">UserController</span> {
+
+    <span class="kw">private final</span> <span class="cls">UserService</span> service;
+
+    <span class="kw">@GetMapping</span>
+    <span class="kw">public</span> <span class="cls">Flux</span>&lt;<span class="cls">User</span>&gt; getAll() {
+        <span class="kw">return</span> service.getAllUsers();
+    }
+
+    <span class="kw">@GetMapping</span>(<span class="str">"/{id}"</span>)
+    <span class="kw">public</span> <span class="cls">Mono</span>&lt;<span class="cls">ResponseEntity</span>&lt;<span class="cls">User</span>&gt;&gt; getById(<span class="kw">@PathVariable Long</span> id) {
+        <span class="kw">return</span> service.getUserById(id)
+            .map(<span class="cls">ResponseEntity</span>::ok)
+            .defaultIfEmpty(<span class="cls">ResponseEntity</span>.notFound().build());
+    }
+
+    <span class="kw">@PostMapping</span>
+    <span class="kw">public</span> <span class="cls">Mono</span>&lt;<span class="cls">User</span>&gt; create(<span class="kw">@RequestBody</span> <span class="cls">User</span> user) {
+        <span class="kw">return</span> service.createUser(user);
+    }
+
+    <span class="kw">@PutMapping</span>(<span class="str">"/{id}"</span>)
+    <span class="kw">public</span> <span class="cls">Mono</span>&lt;<span class="cls">User</span>&gt; update(<span class="kw">@PathVariable Long</span> id, <span class="kw">@RequestBody</span> <span class="cls">User</span> user) {
+        <span class="kw">return</span> service.updateUser(id, user);
+    }
+
+    <span class="kw">@DeleteMapping</span>(<span class="str">"/{id}"</span>)
+    <span class="kw">public</span> <span class="cls">Mono</span>&lt;<span class="cls">Void</span>&gt; delete(<span class="kw">@PathVariable Long</span> id) {
+        <span class="kw">return</span> service.deleteUser(id);
+    }
+}</pre>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Endpoint</th><th>Method</th><th>Returns</th></tr>
+        <tr><td>/users</td><td>GET</td><td>Flux&lt;User&gt; — all users</td></tr>
+        <tr><td>/users/{id}</td><td>GET</td><td>Mono&lt;User&gt; — one user</td></tr>
+        <tr><td>/users</td><td>POST</td><td>Mono&lt;User&gt; — created user</td></tr>
+        <tr><td>/users/{id}</td><td>PUT</td><td>Mono&lt;User&gt; — updated user</td></tr>
+        <tr><td>/users/{id}</td><td>DELETE</td><td>Mono&lt;Void&gt; — nothing</td></tr>
+      </table>
+    </div>
+
+    <div class="tip info">🎉 <span>You now have a complete picture — from reactive theory to a real working WebFlux CRUD API. You're at <strong>100% coverage!</strong></span></div>
+  </div>
+
+</main>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting) { e.target.classList.add('shown'); }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Active nav link on scroll
+const sections = document.querySelectorAll('[id]');
+const navLinks = document.querySelectorAll('.nav-link');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(sec => {
+    if(window.scrollY >= sec.offsetTop - 120) current = sec.id;
+  });
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if(link.getAttribute('href') === '#' + current) link.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
